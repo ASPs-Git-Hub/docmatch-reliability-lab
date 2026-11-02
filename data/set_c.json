@@ -1,0 +1,943 @@
+{
+ "meta": {
+  "set": "C",
+  "role": "written in round 2, after code and sets A and B existed, for the P0/P1 traps of review round 1; labelled by the same author model (Claude) from the rules in the README, NOT by an independent human",
+  "synthetic": true,
+  "fictional_vendors": true,
+  "kinds": "normal and trap are single-invoice cases; batch cases carry expected_list, one entry per invoice (MATCH:<po>, FLAG or SKIP)"
+ },
+ "cases": [
+  {
+   "id": "C-N01",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9001\nYour PO: PO-C101\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C101",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C101",
+   "note": "label 'Your PO'"
+  },
+  {
+   "id": "C-N02",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9002\nPO Number PO-C102\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C102",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C102",
+   "note": "label 'PO Number' no colon"
+  },
+  {
+   "id": "C-N03",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9003\nOrder Ref: PO-C103\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C103",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C103",
+   "note": "label 'Order Ref'"
+  },
+  {
+   "id": "C-N04",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: TP-310\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Pallet | 10 x 45.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-C104",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-10"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C104",
+   "note": "no reference, one exact candidate in window"
+  },
+  {
+   "id": "C-N05",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9005\nPO: PO-C105\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.80 = 100.80\nSubtotal: 100.80\nTax: 0.00\nTotal: 100.80",
+   "pos": [
+    {
+     "po_id": "PO-C105",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C105",
+   "note": "0.80 over, inside floor"
+  },
+  {
+   "id": "C-N06",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: OC-77\nPO: PO-C106\nVendor: Oriel Cable & Conduit Inc\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Cable | 1 x 3940.00 = 3940.00\nSubtotal: 3940.00\nTax: 0.00\nTotal: 3940.00",
+   "pos": [
+    {
+     "po_id": "PO-C106",
+     "vendor": "Oriel Cable & Conduit Inc",
+     "currency": "USD",
+     "total": "4000.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C106",
+   "note": "1.5 percent under on 4000"
+  },
+  {
+   "id": "C-N07",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: TP-311\nPO: PO-C107\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Pallet | 1 x 10050.00 = 10050.00\nSubtotal: 10050.00\nTax: 0.00\nTotal: 10050.00",
+   "pos": [
+    {
+     "po_id": "PO-C107",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "10000.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C107",
+   "note": "over by exactly the 50.00 cap"
+  },
+  {
+   "id": "C-N08",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: OC-78\nVendor: Oriel Cable & Conduit Incorporated\nDate: 2026-06-03\nCurrency: USD\nItems:\n- Conduit | 2 x 150.00 = 300.00\nSubtotal: 300.00\nTax: 0.00\nTotal: 300.00",
+   "pos": [
+    {
+     "po_id": "PO-C108",
+     "vendor": "Oriel Cable & Conduit Inc",
+     "currency": "USD",
+     "total": "300.00",
+     "date": "2026-05-25"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C108",
+   "note": "Incorporated vs Inc, no ref"
+  },
+  {
+   "id": "C-N09",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9009\nPO: PO-C109\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Bolt\t5 x 20.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C109",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C109",
+   "note": "tab separated item row"
+  },
+  {
+   "id": "C-N10",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9010\nPO: PO-C110\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C110",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    },
+    {
+     "po_id": "PO-C111",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C110",
+   "note": "ref picks the right one of two same-amount POs"
+  },
+  {
+   "id": "C-N11",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: OC-79\nPO: PO-C112\nVendor: Oriel Cable & Conduit Inc\nDate: 2026-06-03\nCurrency: EUR\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: €100.00",
+   "pos": [
+    {
+     "po_id": "PO-C112",
+     "vendor": "Oriel Cable & Conduit Inc",
+     "currency": "EUR",
+     "total": "100.00",
+     "date": "2026-05-25"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C112",
+   "note": "EUR code with euro symbol agree"
+  },
+  {
+   "id": "C-N12",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9013\nPurchase Order No. PO-C113\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C113",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C113",
+   "note": "label 'Purchase Order No.'"
+  },
+  {
+   "id": "C-N13",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: TP-312\nPO: PO-C114\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Pallet | 2 x 60.00 = 120.00\n- Strap | 4 x 5.00 = 20.00\nSubtotal: 140.00\nTax: 14.00\nTotal: 154.00",
+   "pos": [
+    {
+     "po_id": "PO-C114",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "154.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C114",
+   "note": "two lines plus tax"
+  },
+  {
+   "id": "C-N14",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: LF-9015\nPO: po-c115\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C115",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-C115",
+   "note": "lower-case reference"
+  },
+  {
+   "id": "C-T01",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-320\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Pallet | 1 x 450.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-C201",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-10"
+    },
+    {
+     "po_id": "PO-C202",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-14"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "two same-amount POs, no reference"
+  },
+  {
+   "id": "C-T02",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-321\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nRemit against PO-C203 attached\nItems:\n- Pallet | 1 x 450.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-C203",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-01-10"
+    },
+    {
+     "po_id": "PO-C204",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-10"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "reference only in free text, newer twin would be guessed"
+  },
+  {
+   "id": "C-T03",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: OC-80\nVendor: Oriel Cable & Conduit Inc\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 1.250,00",
+   "pos": [
+    {
+     "po_id": "PO-C205",
+     "vendor": "Oriel Cable & Conduit Inc",
+     "currency": "USD",
+     "total": "1250.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "decimal-comma thousands total"
+  },
+  {
+   "id": "C-T04",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: OC-81\nVendor: Oriel Cable & Conduit Inc\nDate: 2026-06-01\nCurrency: USD\nSubtotal: 12,50\nTax: 0.00\nTotal: 12,50",
+   "pos": [
+    {
+     "po_id": "PO-C206",
+     "vendor": "Oriel Cable & Conduit Inc",
+     "currency": "USD",
+     "total": "1250.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "12,50 must not become 1250.00"
+  },
+  {
+   "id": "C-T05",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9024\nPO: PO-C207\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: $100.00",
+   "pos": [
+    {
+     "po_id": "PO-C207",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "dollar sign without a currency code"
+  },
+  {
+   "id": "C-T06",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9025\nPO: PO-C208\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: €100.00",
+   "pos": [
+    {
+     "po_id": "PO-C208",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "code USD but euro symbol"
+  },
+  {
+   "id": "C-T07",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9026\nPO: PO-C209\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nAmount Due: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C209",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "only an Amount Due line"
+  },
+  {
+   "id": "C-T08",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9027\nPO: PO-C210\nVendor: Larkspur Fastening Co\nDate: 2026-02-30\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C210",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-02-01"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "impossible calendar date"
+  },
+  {
+   "id": "C-T09",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-322\nPO: PO-C211\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Pallet | 3 x 400.00 = 120.00\nSubtotal: 120.00\nTax: 0.00\nTotal: 120.00",
+   "pos": [
+    {
+     "po_id": "PO-C211",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "120.00",
+     "date": "2026-05-10"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "3 x 400 is not 120"
+  },
+  {
+   "id": "C-T10",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-323\nPO: PO-C212\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Pallet, qty 1, 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-C212",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-10"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "item row in an unknown layout"
+  },
+  {
+   "id": "C-T11",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-324\nPO: PO-C213\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Pallet | 1 x 10080.00 = 10080.00\nSubtotal: 10080.00\nTax: 0.00\nTotal: 10080.00",
+   "pos": [
+    {
+     "po_id": "PO-C213",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "10000.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "over by 80.00 on 10000, above the cap"
+  },
+  {
+   "id": "C-T12",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: K-5\nVendor: Kestrel Inc\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C214",
+     "vendor": "Kestrel Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "Inc vs Co, no reference"
+  },
+  {
+   "id": "C-T13",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9031\nPO: PO-C215\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C2150",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "reference is a prefix of another PO id"
+  },
+  {
+   "id": "C-T14",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9032\nPO: PO-C216.2\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C216",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "reference with a trailing fragment"
+  },
+  {
+   "id": "C-T15",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-325\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Pallet | 1 x 450.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-C217",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2025-11-01"
+    },
+    {
+     "po_id": "PO-C218",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "older same-amount twin outside the window"
+  },
+  {
+   "id": "C-T16",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: TP-326\nPO: PO-C219\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-06-01\nCurrency: USD\nItems:\n- Pallet | 1 x 1000.00 = 1000.00\nSubtotal: 1000.00\nTax: 0.00\nTotal: 1000.00",
+   "pos": [
+    {
+     "po_id": "PO-C219",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "1010.00",
+     "date": "2026-05-20"
+    },
+    {
+     "po_id": "PO-C220",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-05-20"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "named PO is a worse fit than a same-vendor twin"
+  },
+  {
+   "id": "C-T17",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9033\nPO: PO-C221\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nPart: 0 of 2\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C221",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "part index zero"
+  },
+  {
+   "id": "C-T18",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9034\nPO: PO-C222\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nSubtotal: 90.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C222",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "subtotal plus tax is not the total, no item rows"
+  },
+  {
+   "id": "C-T19",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9035\nPO: PO-C223\nPurchase Order: PO-C224\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C223",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    },
+    {
+     "po_id": "PO-C224",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "two different PO lines"
+  },
+  {
+   "id": "C-T20",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: ZZ-1\nVendor: Quillon Freight Partners\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C225",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "unknown vendor, no reference"
+  },
+  {
+   "id": "C-T21",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9036\nPO: PO-C226\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Credit | 1 x -50.00 = -50.00\nSubtotal: -50.00\nTax: 0.00\nTotal: -50.00",
+   "pos": [
+    {
+     "po_id": "PO-C226",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "-50.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "credit note"
+  },
+  {
+   "id": "C-T22",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9037\nPO: PO-C227\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C227",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "GBP",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "PO is in GBP"
+  },
+  {
+   "id": "C-T23",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9038\nPO: PO-C228\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 105.00 = 105.00\nSubtotal: 105.00\nTax: 0.00\nTotal: 105.00",
+   "pos": [
+    {
+     "po_id": "PO-C228",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "5 percent over, above 2 percent"
+  },
+  {
+   "id": "C-T24",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9039\nPO: PO-C229\nVendor: Larkspur Fastening Co\nShipped: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C229",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "no labelled invoice date"
+  },
+  {
+   "id": "C-T25",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: LF-9040\nPO: PO-C230\nVendor:\nSomething: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+   "pos": [
+    {
+     "po_id": "PO-C230",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "empty vendor label, value on the next line"
+  },
+  {
+   "id": "C-B01",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9101\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9102\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-14\nCurrency: USD\nItems:\n- Item | 1 x 101.00 = 101.00\nSubtotal: 101.00\nTax: 0.00\nTotal: 101.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "FLAG"
+   ],
+   "note": "same PO billed again, new number, new date, new amount"
+  },
+  {
+   "id": "C-B02",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9103\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9104\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-13\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "FLAG"
+   ],
+   "note": "same PO billed again, same amount, next day"
+  },
+  {
+   "id": "C-B03",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9105\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9105\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "SKIP"
+   ],
+   "note": "exact resubmission"
+  },
+  {
+   "id": "C-B04",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9106\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9106\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.50 = 100.50\nSubtotal: 100.50\nTax: 0.00\nTotal: 100.50"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "FLAG"
+   ],
+   "note": "same number, changed content"
+  },
+  {
+   "id": "C-B05",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9107\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: EUR\nPart: 1 of 2\nItems:\n- Item | 1 x 50.00 = 50.00\nSubtotal: 50.00\nTax: 0.00\nTotal: 50.00",
+    "INVOICE\nInvoice No: LF-9107\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nPart: 2 of 2\nItems:\n- Item | 1 x 50.00 = 50.00\nSubtotal: 50.00\nTax: 0.00\nTotal: 50.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "FLAG",
+    "FLAG"
+   ],
+   "note": "two parts in different currencies"
+  },
+  {
+   "id": "C-B06",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9108\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nPart 2 of 2\nItems:\n- Item | 1 x 50.00 = 50.00\nSubtotal: 50.00\nTax: 0.00\nTotal: 50.00",
+    "INVOICE\nInvoice No: LF-9108\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nPart 1 of 2\nItems:\n- Item | 1 x 50.00 = 50.00\nSubtotal: 50.00\nTax: 0.00\nTotal: 50.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "FLAG",
+    "MATCH:PO-C301"
+   ],
+   "note": "parts arrive reversed, no colon syntax"
+  },
+  {
+   "id": "C-B07",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9109\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9110\nPO: PO-C302\nVendor: Larkspur Fastening Co\nDate: 2026-05-15\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    },
+    {
+     "po_id": "PO-C302",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-03"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "MATCH:PO-C302"
+   ],
+   "note": "two invoices, two POs, same amount"
+  },
+  {
+   "id": "C-B08",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: TP-330\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Pallet | 1 x 450.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+    "INVOICE\nInvoice No: TP-331\nVendor: Tamsin Pallet Works Ltd\nDate: 2026-05-23\nCurrency: USD\nItems:\n- Pallet | 1 x 450.00 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C303",
+     "vendor": "Tamsin Pallet Works Ltd",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-05-10"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C303",
+    "FLAG"
+   ],
+   "note": "no reference, second invoice for the only candidate PO"
+  },
+  {
+   "id": "C-B09",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9111\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9112\nPO: PO-C301\nVendor: LARKSPUR FASTENING CO\nDate: 2026-05-19\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "FLAG"
+   ],
+   "note": "vendor re-typed in capitals, new number"
+  },
+  {
+   "id": "C-B10",
+   "kind": "batch",
+   "invoices": [
+    "INVOICE\nInvoice No: LF-9113\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-12\nCurrency: USD\nItems:\n- Item | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 100.00",
+    "INVOICE\nInvoice No: LF-9114\nPO: PO-C301\nVendor: Larkspur Fastening Co\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Item | 1 x 60.00 = 60.00\nSubtotal: 60.00\nTax: 0.00\nTotal: 60.00"
+   ],
+   "pos": [
+    {
+     "po_id": "PO-C301",
+     "vendor": "Larkspur Fastening Co",
+     "currency": "USD",
+     "total": "100.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected_list": [
+    "MATCH:PO-C301",
+    "FLAG"
+   ],
+   "note": "second invoice, smaller amount, same PO (partial billing is not supported)"
+  }
+ ]
+}

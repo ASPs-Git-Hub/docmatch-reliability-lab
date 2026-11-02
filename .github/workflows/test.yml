@@ -1,0 +1,24 @@
+name: docmatch-tests
+# This file sits at the lab root: it runs when the lab is published as its own repository.
+# Inside a monorepo GitHub ignores it (only the repository-root .github is read); copy it there and
+# add `defaults: run: working-directory: proofs/docmatch-reliability-lab`. It has NOT run anywhere yet.
+on:
+  push:
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        python: ["3.9", "3.10", "3.12", "3.13"]
+    env:
+      PYTHONDONTWRITEBYTECODE: "1"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python3 -B -m unittest discover -s tests
+      - run: python3 -B scripts/evaluate.py
+      - run: python3 -B scripts/mutate.py

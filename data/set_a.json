@@ -1,0 +1,378 @@
+{
+ "meta": {
+  "set": "A",
+  "role": "tuning: thresholds were adjusted while looking at these cases; results here are NOT clean",
+  "synthetic": true,
+  "fictional_vendors": true
+ },
+ "cases": [
+  {
+   "id": "A-N01",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3001\nPO: PO-A101\nVendor: Norland Valve Works\nDate: 2026-01-12\nCurrency: USD\nItems:\n- Valve | 4 x 55.00 = 220.00\nSubtotal: 220.00\nTax: 0.00\nTotal: 220.00",
+   "pos": [
+    {
+     "po_id": "PO-A101",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "220.00",
+     "date": "2026-01-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A101",
+   "note": "tier1"
+  },
+  {
+   "id": "A-N02",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3002\nVendor: Pelham Safety Supply\nDate: 2026-01-15\nCurrency: USD\nItems:\n- Helmet | 10 x 24.00 = 240.00\nSubtotal: 240.00\nTax: 0.00\nTotal: 240.00",
+   "pos": [
+    {
+     "po_id": "PO-A102",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "240.00",
+     "date": "2026-01-05"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A102",
+   "note": "tier2"
+  },
+  {
+   "id": "A-N03",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3003\nPO: PO-A103\nVendor: Redfern Cable Co\nDate: 2026-01-20\nCurrency: EUR\nItems:\n- Cable drum | 2 x 310.00 = 620.00\nSubtotal: 620.00\nTax: 12.40\nTotal: 632.40",
+   "pos": [
+    {
+     "po_id": "PO-A103",
+     "vendor": "Redfern Cable Co",
+     "currency": "EUR",
+     "total": "632.40",
+     "date": "2026-01-08"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A103",
+   "note": "tier1 with tax"
+  },
+  {
+   "id": "A-N04",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3004\nVendor: Wexcombe Hydraulics Ltd\nDate: 2026-02-01\nCurrency: USD\nItems:\n- Seal kit | 3 x 49.99 = 149.97\nSubtotal: 149.97\nTax: 0.00\nTotal: 149.97",
+   "pos": [
+    {
+     "po_id": "PO-A104",
+     "vendor": "Wexcombe Hydraulics Ltd",
+     "currency": "USD",
+     "total": "150.00",
+     "date": "2026-01-25"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A104",
+   "note": "tier2, rounding 149.97 vs 150"
+  },
+  {
+   "id": "A-N05",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3005\nPO: PO-A105\nVendor: Norland Valve Works\nDate: 2026-02-03\nCurrency: USD\nItems:\n- Gasket | 1 x 1015.00 = 1015.00\nSubtotal: 1015.00\nTax: 0.00\nTotal: 1015.00",
+   "pos": [
+    {
+     "po_id": "PO-A105",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-01-30"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A105",
+   "note": "tier1 1.5 percent over"
+  },
+  {
+   "id": "A-N06",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3006\nVendor: PELHAM SAFETY SUPPLY\nDate: 2026-02-05\nCurrency: USD\nItems:\n- Gloves | 50 x 2.50 = 125.00\nSubtotal: 125.00\nTax: 0.00\nTotal: 125.00",
+   "pos": [
+    {
+     "po_id": "PO-A106",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "125.00",
+     "date": "2026-02-01"
+    },
+    {
+     "po_id": "PO-A107",
+     "vendor": "Redfern Cable Co",
+     "currency": "USD",
+     "total": "125.00",
+     "date": "2026-02-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A106",
+   "note": "tier2 case, distractor vendor"
+  },
+  {
+   "id": "A-N07",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-3007\nVendor: Redfern Cable Co\nDate: 2026-02-10\nCurrency: USD\nItems:\n- Lug | 200 x 0.40 = 80.00\nSubtotal: 80.00\nTax: 0.00\nTotal: 80.00",
+   "pos": [
+    {
+     "po_id": "PO-A108",
+     "vendor": "Redfern Cable Co",
+     "currency": "USD",
+     "total": "80.00",
+     "date": "2025-10-01"
+    },
+    {
+     "po_id": "PO-A109",
+     "vendor": "Redfern Cable Co",
+     "currency": "USD",
+     "total": "80.00",
+     "date": "2026-02-08"
+    }
+   ],
+   "expected": "FLAG",
+   "expected_po": null,
+   "note": "tier2 window picks the newer twin | RELABELLED in round 2: a no-reference match with a same-amount twin outside the window is now ambiguous (twin_outside_window)"
+  },
+  {
+   "id": "A-N08",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3008\nPO No: pO-A110\nVendor: Wexcombe Hydraulics Ltd\nDate: 2026-02-12\nCurrency: GBP\nItems:\n- Pump | 1 x 2400.00 = 2400.00\nSubtotal: 2400.00\nTax: 0.00\nTotal: 2400.00",
+   "pos": [
+    {
+     "po_id": "PO-A110",
+     "vendor": "Wexcombe Hydraulics Ltd",
+     "currency": "GBP",
+     "total": "2400.00",
+     "date": "2026-02-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A110",
+   "note": "tier1 'PO No' label, mixed case"
+  },
+  {
+   "id": "A-N09",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3009\nVendor: Norland Valve Works\nDate: 2026-02-14\nCurrency: USD\nItems:\n- Washer | 100 x 0.10 = 10.00\nSubtotal: 10.00\nTax: 0.00\nTotal: 10.00",
+   "pos": [
+    {
+     "po_id": "PO-A111",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "10.50",
+     "date": "2026-02-10"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A111",
+   "note": "tier2, 0.50 under, inside floor"
+  },
+  {
+   "id": "A-N10",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3010\nPO: PO-A112\nVendor: Pelham Safety Supply\nDate: 2026-02-18\nCurrency: USD\nItems:\n- Visor | 7 x 13.00 = 91.00\nSubtotal: 91.00\nTax: 0.00\nTotal: 91.00",
+   "pos": [
+    {
+     "po_id": "PO-A112",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "91.00",
+     "date": "2026-02-10"
+    },
+    {
+     "po_id": "PO-A113",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "91.00",
+     "date": "2026-02-10"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A112",
+   "note": "tier1 beats twin PO"
+  },
+  {
+   "id": "A-N11",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3011\nVendor: Redfern Cable, Co.\nDate: 2026-02-20\nCurrency: USD\nItems:\n- Conduit | 30 x 6.00 = 180.00\nSubtotal: 180.00\nTax: 0.00\nTotal: 180.00",
+   "pos": [
+    {
+     "po_id": "PO-A114",
+     "vendor": "Redfern Cable Co",
+     "currency": "USD",
+     "total": "180.00",
+     "date": "2026-02-12"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A114",
+   "note": "tier2 vendor punctuation"
+  },
+  {
+   "id": "A-N12",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3012\nPO: PO-A115\nVendor: Wexcombe Hydraulics Ltd\nDate: 2026-03-01\nCurrency: USD\nItems:\n- Hose | 12 x 81.25 = 975.00\nSubtotal: 975.00\nTax: 0.00\nTotal: 975.00",
+   "pos": [
+    {
+     "po_id": "PO-A115",
+     "vendor": "Wexcombe Hydraulics Ltd",
+     "currency": "USD",
+     "total": "975.00",
+     "date": "2026-02-20"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A115",
+   "note": "tier1 thousands"
+  },
+  {
+   "id": "A-N13",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: A-3013\nVendor: Norland Valve Works\nDate: 2026-03-05\nCurrency: USD\nItems:\n- Actuator | 1 x 700.00 = 700.00\nSubtotal: 700.00\nTax: 0.00\nTotal: 700.00",
+   "pos": [
+    {
+     "po_id": "PO-A116",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "700.00",
+     "date": "2026-03-05"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-A116",
+   "note": "tier2 same day"
+  },
+  {
+   "id": "A-T01",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4001\nVendor: Pelham Safety Supply\nDate: 2026-03-06\nCurrency: USD\nItems:\n- Boots | 20 x 30.00 = 600.00\nSubtotal: 600.00\nTax: 0.00\nTotal: 600.00",
+   "pos": [
+    {
+     "po_id": "PO-A201",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "600.00",
+     "date": "2026-03-01"
+    },
+    {
+     "po_id": "PO-A202",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "600.00",
+     "date": "2026-03-02"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "twin POs"
+  },
+  {
+   "id": "A-T02",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4002\nPO: PO-A203\nVendor: Redfern Cable Co\nDate: 2026-03-07\nCurrency: USD\nItems:\n- Cable | 1 x 500.00 = 500.00\nSubtotal: 500.00\nTax: 0.00\nTotal: 500.00",
+   "pos": [
+    {
+     "po_id": "PO-A203",
+     "vendor": "Redfern Cable Co",
+     "currency": "EUR",
+     "total": "500.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "currency mismatch with ref"
+  },
+  {
+   "id": "A-T03",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4003\nPO: PO-A204\nVendor: Wexcombe Hydraulics Ltd\nDate: 2026-03-08\nCurrency: USD\nItems:\n- Pump | 1 x 1500.00 = 1500.00\nSubtotal: 1500.00\nTax: 0.00\nTotal: 1500.00",
+   "pos": [
+    {
+     "po_id": "PO-A204",
+     "vendor": "Wexcombe Hydraulics Ltd",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "50 percent over"
+  },
+  {
+   "id": "A-T04",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4004\nVendor: Norlund Valve Works\nDate: 2026-03-09\nCurrency: USD\nItems:\n- Valve | 1 x 310.00 = 310.00\nSubtotal: 310.00\nTax: 0.00\nTotal: 310.00",
+   "pos": [
+    {
+     "po_id": "PO-A205",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "310.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "one-letter vendor typo"
+  },
+  {
+   "id": "A-T05",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4005\nVendor: Quorn Textile Mills\nDate: 2026-03-10\nCurrency: USD\nItems:\n- Cloth | 1 x 310.00 = 310.00\nSubtotal: 310.00\nTax: 0.00\nTotal: 310.00",
+   "pos": [
+    {
+     "po_id": "PO-A206",
+     "vendor": "Norland Valve Works",
+     "currency": "USD",
+     "total": "310.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "UNMATCHED",
+   "expected_po": null,
+   "note": "unknown vendor"
+  },
+  {
+   "id": "A-T06",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4006\nPO: PO-A207\nVendor: Pelham Safety Supply\nDate: 2026-03-11\nCurrency: USD\nItems:\n- Mask | 1 x 90.00 = 90.00\nSubtotal: 90.00\nTax: 0.00\nTotal: 90.00",
+   "pos": [
+    {
+     "po_id": "PO-A207",
+     "vendor": "Redfern Cable Co",
+     "currency": "USD",
+     "total": "90.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "ref of other vendor"
+  },
+  {
+   "id": "A-T07",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: A-4007\nPO: PO-A208\nVendor: Pelham Safety Supply\nDate: 2026-03-12\nCurrency: USD\nItems:\n- Mask | 1 x 100.00 = 100.00\nSubtotal: 100.00\nTax: 0.00\nTotal: 120.00",
+   "pos": [
+    {
+     "po_id": "PO-A208",
+     "vendor": "Pelham Safety Supply",
+     "currency": "USD",
+     "total": "120.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "lines sum 100, stated total 120"
+  }
+ ]
+}

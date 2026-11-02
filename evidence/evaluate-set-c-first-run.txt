@@ -1,0 +1,22 @@
+=== Set C: NEW in round 2 (same author model labelled it; not independent): 49 cases ===
+ DocMatch  (single-invoice cases: 39)
+  false auto-match         0/39     0.0%  Wilson95 [  0.0%,   9.0%]
+  trap flagged            25/25   100.0%  Wilson95 [ 86.7%, 100.0%]
+  correct auto-match      14/14   100.0%  Wilson95 [ 78.5%, 100.0%]
+  dropped (no valid single disposition): 0
+  batch cases: 10 (20 invoices)
+  batch false auto         0/20     0.0%  Wilson95 [  0.0%,  16.1%]
+  batch wrong outcome      0/20     0.0%  Wilson95 [  0.0%,  16.1%]
+  POs auto-matched more than once: 0
+ NaiveDocMatch  (single-invoice cases: 39)
+  false auto-match        24/39    61.5%  Wilson95 [ 45.9%,  75.1%]
+  trap flagged             1/25     4.0%  Wilson95 [  0.7%,  19.5%]
+  correct auto-match      14/14   100.0%  Wilson95 [ 78.5%, 100.0%]
+  dropped (no valid single disposition): 0
+  detail: FALSE_AUTO:C-T01, FALSE_AUTO:C-T02, FALSE_AUTO:C-T03, FALSE_AUTO:C-T04, FALSE_AUTO:C-T05, FALSE_AUTO:C-T06, FALSE_AUTO:C-T07, FALSE_AUTO:C-T08, FALSE_AUTO:C-T09, FALSE_AUTO:C-T10, FALSE_AUTO:C-T11, FALSE_AUTO:C-T12, FALSE_AUTO:C-T13, FALSE_AUTO:C-T14, FALSE_AUTO:C-T15, FALSE_AUTO:C-T16, FALSE_AUTO:C-T17, FALSE_AUTO:C-T18, FALSE_AUTO:C-T19, FALSE_AUTO:C-T21, FALSE_AUTO:C-T22, FALSE_AUTO:C-T23, FALSE_AUTO:C-T24, FALSE_AUTO:C-T25
+  batch cases: 10 (20 invoices)
+  batch false auto        11/20    55.0%  Wilson95 [ 34.2%,  74.2%]
+  batch wrong outcome     11/20    55.0%  Wilson95 [ 34.2%,  74.2%]
+  POs auto-matched more than once: 10
+  batch detail: C-B01:MATCH:PO-C301!=FLAG, C-B02:MATCH:PO-C301!=FLAG, C-B03:MATCH:PO-C301!=SKIP, C-B04:MATCH:PO-C301!=FLAG, C-B05:MATCH:PO-C301!=FLAG, C-B05:MATCH:PO-C301!=FLAG, C-B06:MATCH:PO-C301!=FLAG, C-B07:MATCH:PO-C301!=MATCH:PO-C302, C-B08:MATCH:PO-C303!=FLAG, C-B09:MATCH:PO-C301!=FLAG, C-B10:MATCH:PO-C301!=FLAG
+

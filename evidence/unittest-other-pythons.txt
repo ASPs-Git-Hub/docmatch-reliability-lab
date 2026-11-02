@@ -1,0 +1,8 @@
+== Python 3.9.6
+Ran 203 tests in 0.089s
+
+OK
+== Python 3.12.13
+Ran 203 tests in 0.085s
+
+OK

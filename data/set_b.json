@@ -1,0 +1,693 @@
+{
+ "meta": {
+  "set": "B",
+  "role": "frozen, clean: written before match.py thresholds; never used to tune",
+  "synthetic": true,
+  "fictional_vendors": true,
+  "rules_at_freeze": "auto-match only when exactly one PO is found by exact PO ref (vendor and total within tolerance, same currency) or by exact normalised vendor + total within tolerance + date window, same currency. Everything else is AMBIGUOUS or UNMATCHED. Tolerance max(2%,1.00). Eval counts any needs_review as flagged."
+ },
+ "cases": [
+  {
+   "id": "B-N01",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1001\nPO: PO-5001\nVendor: Brightwater Supplies Ltd\nDate: 2026-03-10\nCurrency: USD\nItems:\n- Widget A | 2 x 10.00 = 20.00\n- Widget B | 4 x 50.00 = 200.00\nSubtotal: 220.00\nTax: 0.00\nTotal: 220.00",
+   "pos": [
+    {
+     "po_id": "PO-5001",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "220.00",
+     "date": "2026-03-01"
+    },
+    {
+     "po_id": "PO-5002",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "220.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-5001",
+   "note": "tier1 exact ref"
+  },
+  {
+   "id": "B-N02",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1002\nPO: PO-5101\nVendor: Halvorsen Tooling Inc\nDate: 2026-03-11\nCurrency: USD\nItems:\n- Pallet | 10 x 101.50 = 1015.00\nSubtotal: 1015.00\nTax: 0.00\nTotal: 1015.00",
+   "pos": [
+    {
+     "po_id": "PO-5101",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-5101",
+   "note": "tier1, 1.5 percent over, inside tolerance"
+  },
+  {
+   "id": "B-N03",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1003\nPO: PO-5201\nVendor: Tarn & Fell Stationers\nDate: 2026-03-12\nCurrency: USD\nItems:\n- Ream | 1 x 30.80 = 30.80\nSubtotal: 30.80\nTax: 0.00\nTotal: 30.80",
+   "pos": [
+    {
+     "po_id": "PO-5201",
+     "vendor": "Tarn & Fell Stationers",
+     "currency": "USD",
+     "total": "30.00",
+     "date": "2026-03-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-5201",
+   "note": "tier1, 0.80 over on a 30.00 PO, inside the 1.00 floor"
+  },
+  {
+   "id": "B-N04",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1004\nVendor: Quillon Packaging Co\nDate: 2026-04-12\nCurrency: USD\nItems:\n- Carton | 120 x 4.00 = 480.00\nSubtotal: 480.00\nTax: 0.00\nTotal: 480.00",
+   "pos": [
+    {
+     "po_id": "PO-6001",
+     "vendor": "Quillon Packaging Co",
+     "currency": "USD",
+     "total": "480.00",
+     "date": "2026-04-01"
+    },
+    {
+     "po_id": "PO-6002",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "480.00",
+     "date": "2026-04-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-6001",
+   "note": "tier2, no ref, other vendor same total is a distractor"
+  },
+  {
+   "id": "B-N05",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1005\nVendor: QUILLON PACKAGING CO.\nDate: 2026-04-14\nCurrency: USD\nItems:\n- Carton | 60 x 8.00 = 480.00\nSubtotal: 480.00\nTax: 0.00\nTotal: 480.00",
+   "pos": [
+    {
+     "po_id": "PO-6011",
+     "vendor": "Quillon Packaging Co",
+     "currency": "USD",
+     "total": "480.00",
+     "date": "2026-04-03"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-6011",
+   "note": "tier2, vendor case and punctuation differ"
+  },
+  {
+   "id": "B-N06",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1006\nVendor: Mereside Logistics\nDate: 2026-05-20\nCurrency: USD\nItems:\n- Freight | 1 x 640.00 = 640.00\nSubtotal: 640.00\nTax: 0.00\nTotal: 640.00",
+   "pos": [
+    {
+     "po_id": "PO-6101",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "1250.00",
+     "date": "2026-05-02"
+    },
+    {
+     "po_id": "PO-6102",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "640.00",
+     "date": "2026-05-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-6102",
+   "note": "tier2, same vendor other PO has other total"
+  },
+  {
+   "id": "B-N07",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1007\nVendor: Ostrava Fastener Works\nDate: 2026-06-15\nCurrency: USD\nItems:\n- Bolt M8 | 300 x 1.00 = 300.00\nSubtotal: 300.00\nTax: 0.00\nTotal: 300.00",
+   "pos": [
+    {
+     "po_id": "PO-6201",
+     "vendor": "Ostrava Fastener Works",
+     "currency": "USD",
+     "total": "300.00",
+     "date": "2026-01-05"
+    },
+    {
+     "po_id": "PO-6202",
+     "vendor": "Ostrava Fastener Works",
+     "currency": "USD",
+     "total": "300.00",
+     "date": "2026-06-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-6202",
+   "note": "tier2, older twin PO is outside the date window"
+  },
+  {
+   "id": "B-N08",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1008\nPO: PO-7001\nVendor: Kestrel Lab Equipment\nDate: 2026-06-20\nCurrency: USD\nItems:\n- Pipette | 1 x 75.50 = 75.50\nSubtotal: 75.50\nTax: 0.00\nTotal: 75.50",
+   "pos": [
+    {
+     "po_id": "PO-7001",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "USD",
+     "total": "75.50",
+     "date": "2026-06-10"
+    },
+    {
+     "po_id": "PO-7010",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "USD",
+     "total": "75.50",
+     "date": "2026-06-10"
+    },
+    {
+     "po_id": "PO-7100",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "USD",
+     "total": "750.50",
+     "date": "2026-06-10"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7001",
+   "note": "tier1, look-alike PO numbers; ref decides"
+  },
+  {
+   "id": "B-N09",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1009\nPO: PO-7101\nVendor: Kestrel Lab Equipment\nDate: 2026-07-02\nCurrency: EUR\nItems:\n- Tube rack | 6 x 400.00 = 2400.00\nSubtotal: 2400.00\nTax: 0.00\nTotal: 2400.00",
+   "pos": [
+    {
+     "po_id": "PO-7101",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "EUR",
+     "total": "2400.00",
+     "date": "2026-06-25"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7101",
+   "note": "tier1 EUR"
+  },
+  {
+   "id": "B-N10",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1010\nVendor: Dunmore Cleaning Services\nDate: 2026-07-10\nCurrency: USD\nItems:\n- Cleaning visit | 1 x 510.00 = 510.00\nSubtotal: 510.00\nTax: 0.00\nTotal: 510.00",
+   "pos": [
+    {
+     "po_id": "PO-7201",
+     "vendor": "Dunmore Cleaning Services",
+     "currency": "USD",
+     "total": "500.00",
+     "date": "2026-07-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7201",
+   "note": "tier2, exactly 2.00 percent over (boundary, inclusive)"
+  },
+  {
+   "id": "B-N11",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1011\nPO: PO-7301\nVendor: Brightwater Supplies Ltd\nDate: 2026-07-12\nCurrency: USD\nItems:\n- Item A | 3 x 19.99 = 59.97\n- Item B | 1 x 120.00 = 120.00\n- Item C | 10 x 2.35 = 23.50\nSubtotal: 203.47\nTax: 16.28\nTotal: 219.75",
+   "pos": [
+    {
+     "po_id": "PO-7301",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "219.75",
+     "date": "2026-07-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7301",
+   "note": "tier1, three lines plus tax"
+  },
+  {
+   "id": "B-N12",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1012\nPO: po-7311\nVendor: Halvorsen Tooling Inc\nDate: 2026-07-14\nCurrency: USD\nItems:\n- Drill bit | 5 x 12.00 = 60.00\nSubtotal: 60.00\nTax: 0.00\nTotal: 60.00",
+   "pos": [
+    {
+     "po_id": "PO-7311",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "60.00",
+     "date": "2026-07-03"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7311",
+   "note": "tier1, lowercase ref normalised"
+  },
+  {
+   "id": "B-N13",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1013\nVendor: Tarn & Fell Stationers\nDate: 2026-08-01\nCurrency: USD\nItems:\n- Binder | 25 x 3.20 = 80.00\nSubtotal: 80.00\nTax: 0.00\nTotal: 80.00",
+   "pos": [
+    {
+     "po_id": "PO-7401",
+     "vendor": "Tarn & Fell Stationers",
+     "currency": "USD",
+     "total": "80.00",
+     "date": "2026-08-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7401",
+   "note": "tier2, invoice dated same day as PO"
+  },
+  {
+   "id": "B-N14",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1014\nVendor: Halvorsen Tooling, Inc.\nDate: 2026-08-05\nCurrency: USD\nItems:\n- Chuck | 2 x 150.00 = 300.00\nSubtotal: 300.00\nTax: 0.00\nTotal: 300.00",
+   "pos": [
+    {
+     "po_id": "PO-7501",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "300.00",
+     "date": "2026-07-28"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7501",
+   "note": "tier2, comma and suffix punctuation"
+  },
+  {
+   "id": "B-N15",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1015\nPO: PO-7601\nVendor: Mereside Logistics\nDate: 2026-08-09\nCurrency: USD\nItems:\n- Pallet moves | 125 x 10.00 = 1,250.00\nSubtotal: 1,250.00\nTax: 0.00\nTotal: 1,250.00",
+   "pos": [
+    {
+     "po_id": "PO-7601",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "1250.00",
+     "date": "2026-08-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7601",
+   "note": "tier1, thousands separator in amounts"
+  },
+  {
+   "id": "B-N16",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1016\nPO: PO-7701\nVendor: Tarn & Fell Stationers\nDate: 2026-08-10\nCurrency: USD\nItems:\n- Pen | 3 x 3.33 = 9.99\nSubtotal: 9.99\nTax: 0.00\nTotal: 9.99",
+   "pos": [
+    {
+     "po_id": "PO-7701",
+     "vendor": "Tarn & Fell Stationers",
+     "currency": "USD",
+     "total": "10.00",
+     "date": "2026-08-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7701",
+   "note": "tier1, 3 x 3.33 = 9.99 vs 10.00"
+  },
+  {
+   "id": "B-N17",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1017\nVendor: Ostrava Fastener Works\nDate: 2026-09-20\nCurrency: USD\nItems:\n- Washer | 900 x 0.50 = 450.00\nSubtotal: 450.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-7801",
+     "vendor": "Ostrava Fastener Works",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-07-02"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7801",
+   "note": "tier2, invoice 80 days after PO (window is 90)"
+  },
+  {
+   "id": "B-N18",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1018\nPO Ref: PO-7811\nVendor: Dunmore Cleaning Services\nDate: 2026-09-22\nCurrency: GBP\nItems:\n- Deep clean | 1 x 900.00 = 900.00\nSubtotal: 900.00\nTax: 0.00\nTotal: 900.00",
+   "pos": [
+    {
+     "po_id": "PO-7811",
+     "vendor": "Dunmore Cleaning Services",
+     "currency": "GBP",
+     "total": "900.00",
+     "date": "2026-09-10"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7811",
+   "note": "tier1, label 'PO Ref', GBP"
+  },
+  {
+   "id": "B-N19",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1019\nPurchase Order: PO-7901\nVendor: Quillon Packaging Co\nDate: 2026-09-25\nCurrency: USD\nItems:\n- Mailer | 400 x 0.75 = 300.00\nSubtotal: 300.00\nTax: 0.00\nTotal: 300.00",
+   "pos": [
+    {
+     "po_id": "PO-7901",
+     "vendor": "Quillon Packaging Co",
+     "currency": "USD",
+     "total": "300.00",
+     "date": "2026-09-14"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-7901",
+   "note": "tier1, label 'Purchase Order'"
+  },
+  {
+   "id": "B-N20",
+   "kind": "normal",
+   "invoice_text": "INVOICE\nInvoice No: INV-1020\nVendor: Dunmore Cleaning Services\nDate: 2026-10-05\nCurrency: USD\nItems:\n- Mop heads | 1 x 40.90 = 40.90\nSubtotal: 40.90\nTax: 0.00\nTotal: 40.90",
+   "pos": [
+    {
+     "po_id": "PO-8001",
+     "vendor": "Dunmore Cleaning Services",
+     "currency": "USD",
+     "total": "40.00",
+     "date": "2026-10-01"
+    }
+   ],
+   "expected": "MATCH",
+   "expected_po": "PO-8001",
+   "note": "tier2, 0.90 over a 40.00 PO, inside the 1.00 floor"
+  },
+  {
+   "id": "B-T01",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2001\nVendor: Brightwater Supplies Ltd\nDate: 2026-02-20\nCurrency: USD\nItems:\n- Toner | 41 x 10.00 = 410.00\nSubtotal: 410.00\nTax: 0.00\nTotal: 410.00",
+   "pos": [
+    {
+     "po_id": "PO-8101",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "410.00",
+     "date": "2026-02-01"
+    },
+    {
+     "po_id": "PO-8102",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "410.00",
+     "date": "2026-02-10"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "two same-vendor same-total POs in window"
+  },
+  {
+   "id": "B-T02",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2002\nPO: PO-8201\nVendor: Mereside Logistics\nDate: 2026-02-21\nCurrency: USD\nItems:\n- Freight | 1 x 600.00 = 600.00\nSubtotal: 600.00\nTax: 0.00\nTotal: 600.00",
+   "pos": [
+    {
+     "po_id": "PO-8201",
+     "vendor": "Mereside Logistics",
+     "currency": "EUR",
+     "total": "600.00",
+     "date": "2026-02-05"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "currency mismatch with exact ref"
+  },
+  {
+   "id": "B-T03",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2003\nPO: PO-8301\nVendor: Halvorsen Tooling Inc\nDate: 2026-02-22\nCurrency: USD\nItems:\n- Fixture | 1 x 1300.00 = 1300.00\nSubtotal: 1300.00\nTax: 0.00\nTotal: 1300.00",
+   "pos": [
+    {
+     "po_id": "PO-8301",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-02-05"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "valid ref, total 30 percent over"
+  },
+  {
+   "id": "B-T04",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2004\nPO: PO-8401\nVendor: Quillon Packaging Co\nDate: 2026-02-23\nCurrency: USD\nItems:\n- Carton | 1 x 900.00 = 900.00\nSubtotal: 900.00\nTax: 0.00\nTotal: 900.00",
+   "pos": [
+    {
+     "po_id": "PO-8401",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "900.00",
+     "date": "2026-02-05"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "ref belongs to a different vendor"
+  },
+  {
+   "id": "B-T05",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2005\nPO: PO-9999\nVendor: Ostrava Fastener Works\nDate: 2026-03-01\nCurrency: USD\nItems:\n- Nut | 100 x 2.00 = 200.00\nSubtotal: 200.00\nTax: 0.00\nTotal: 200.00",
+   "pos": [
+    {
+     "po_id": "PO-8501",
+     "vendor": "Ostrava Fastener Works",
+     "currency": "USD",
+     "total": "200.00",
+     "date": "2026-02-20"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "ref unknown while vendor+total PO exists"
+  },
+  {
+   "id": "B-T06",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2006\nVendor: Brightwatr Suplies Ltd\nDate: 2026-03-02\nCurrency: USD\nItems:\n- Gloves | 1 x 350.00 = 350.00\nSubtotal: 350.00\nTax: 0.00\nTotal: 350.00",
+   "pos": [
+    {
+     "po_id": "PO-8601",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "350.00",
+     "date": "2026-02-20"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "vendor typo only: weak tier must not auto-match"
+  },
+  {
+   "id": "B-T07",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2007\nVendor: Zephyr Marine Parts\nDate: 2026-03-03\nCurrency: USD\nItems:\n- Anchor | 1 x 999.00 = 999.00\nSubtotal: 999.00\nTax: 0.00\nTotal: 999.00",
+   "pos": [
+    {
+     "po_id": "PO-8701",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "999.00",
+     "date": "2026-02-20"
+    },
+    {
+     "po_id": "PO-8702",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "120.00",
+     "date": "2026-02-20"
+    }
+   ],
+   "expected": "UNMATCHED",
+   "expected_po": null,
+   "note": "no PO for this vendor"
+  },
+  {
+   "id": "B-T08",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2008\nVendor: Kestrel Lab Equipment\nDate: 2026-09-15\nCurrency: USD\nItems:\n- Reagent | 1 x 250.00 = 250.00\nSubtotal: 250.00\nTax: 0.00\nTotal: 250.00",
+   "pos": [
+    {
+     "po_id": "PO-8801",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "USD",
+     "total": "250.00",
+     "date": "2026-02-28"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "vendor and total right, date 200 days after PO"
+  },
+  {
+   "id": "B-T09",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2009\nVendor: Dunmore Cleaning Services\nDate: 2026-03-05\nCurrency: USD\nItems:\n- Service | 1 x 1005.00 = 1005.00\nSubtotal: 1005.00\nTax: 0.00\nTotal: 1005.00",
+   "pos": [
+    {
+     "po_id": "PO-8901",
+     "vendor": "Dunmore Cleaning Services",
+     "currency": "USD",
+     "total": "1000.00",
+     "date": "2026-02-25"
+    },
+    {
+     "po_id": "PO-8902",
+     "vendor": "Dunmore Cleaning Services",
+     "currency": "USD",
+     "total": "1010.00",
+     "date": "2026-02-25"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "two POs both inside tolerance"
+  },
+  {
+   "id": "B-T10",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2010\nVendor: Kestrel Labs Equipment\nDate: 2026-03-06\nCurrency: USD\nItems:\n- Balance | 1 x 500.00 = 500.00\nSubtotal: 500.00\nTax: 0.00\nTotal: 500.00",
+   "pos": [
+    {
+     "po_id": "PO-9001",
+     "vendor": "Kestrel Lab Equipment",
+     "currency": "USD",
+     "total": "500.00",
+     "date": "2026-02-26"
+    },
+    {
+     "po_id": "PO-9002",
+     "vendor": "Kestrel Lab Equipments",
+     "currency": "USD",
+     "total": "500.00",
+     "date": "2026-02-26"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "two look-alike vendor names"
+  },
+  {
+   "id": "B-T11",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2011\nVendor: Tarn & Fell Stationers\nDate: 2026-03-07\nCurrency: USD\nItems:\n- Desk set | 1 x 820.00 = 820.00\nSubtotal: 820.00\nTax: 0.00\nTotal: 820.00",
+   "pos": [
+    {
+     "po_id": "PO-9101",
+     "vendor": "Tarn & Fell Stationers",
+     "currency": "USD",
+     "total": "800.00",
+     "date": "2026-02-27"
+    }
+   ],
+   "expected": "UNMATCHED",
+   "expected_po": null,
+   "note": "2.5 percent over, no ref, outside tolerance"
+  },
+  {
+   "id": "B-T12",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2012\nVendor: Mereside Logistics\nDate: 2026-03-08\nCurrency: GBP\nItems:\n- Handling | 1 x 410.00 = 410.00\nSubtotal: 410.00\nTax: 0.00\nTotal: 410.00",
+   "pos": [
+    {
+     "po_id": "PO-9201",
+     "vendor": "Mereside Logistics",
+     "currency": "USD",
+     "total": "410.00",
+     "date": "2026-02-28"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "currency mismatch without ref"
+  },
+  {
+   "id": "B-T13",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2013\nPO: PO-9301\nVendor: Brightwater Supplies Ltd\nDate: 2026-03-09\nCurrency: USD\nItems:\n- Adjustment | 1 x 0.00 = 0.00\nSubtotal: 0.00\nTax: 0.00\nTotal: 0.00",
+   "pos": [
+    {
+     "po_id": "PO-9301",
+     "vendor": "Brightwater Supplies Ltd",
+     "currency": "USD",
+     "total": "500.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "zero-total invoice with valid ref"
+  },
+  {
+   "id": "B-T14",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2014\nDate: 2026-03-10\nCurrency: USD\nItems:\n- Mystery | 1 x 50.00 = 50.00\nSubtotal: 50.00\nTax: 0.00\nTotal: 50.00",
+   "pos": [
+    {
+     "po_id": "PO-9401",
+     "vendor": "Halvorsen Tooling Inc",
+     "currency": "USD",
+     "total": "50.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "UNMATCHED",
+   "expected_po": null,
+   "note": "vendor missing, no ref"
+  },
+  {
+   "id": "B-T15",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2015\nPO: PO-9501\nVendor: Ostrava Fastener Works\nDate: 2026-03-11\nCurrency: USD\nItems:\n- Credit | 1 x -120.00 = -120.00\nSubtotal: -120.00\nTax: 0.00\nTotal: -120.00",
+   "pos": [
+    {
+     "po_id": "PO-9501",
+     "vendor": "Ostrava Fastener Works",
+     "currency": "USD",
+     "total": "120.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "negative total (credit note) against positive PO"
+  },
+  {
+   "id": "B-T16",
+   "kind": "trap",
+   "invoice_text": "INVOICE\nInvoice No: INV-2016\nPO: PO-9601\nVendor: Quillon Packaging Co\nDate: 2026-03-12\nCurrency: USD\nItems:\n- Carton | 100 x 4.00 = 400.00\nSubtotal: 400.00\nTax: 0.00\nTotal: 450.00",
+   "pos": [
+    {
+     "po_id": "PO-9601",
+     "vendor": "Quillon Packaging Co",
+     "currency": "USD",
+     "total": "450.00",
+     "date": "2026-03-01"
+    }
+   ],
+   "expected": "AMBIGUOUS",
+   "expected_po": null,
+   "note": "stated total 450 but lines sum to 400; stated total equals PO"
+  }
+ ]
+}
