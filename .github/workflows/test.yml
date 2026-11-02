@@ -1,7 +1,7 @@
 name: docmatch-tests
 # This file sits at the lab root: it runs when the lab is published as its own repository.
 # Inside a monorepo GitHub ignores it (only the repository-root .github is read); copy it there and
-# add `defaults: run: working-directory: proofs/docmatch-reliability-lab`. It has NOT run anywhere yet.
+# add `defaults: run: working-directory: proofs/docmatch-reliability-lab`.
 on:
   push:
   pull_request:

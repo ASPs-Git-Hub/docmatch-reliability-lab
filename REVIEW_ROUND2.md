@@ -4,7 +4,7 @@ Inputs: `fable-docmatch.md` (Claude, 17 findings) and `codex-docmatch.md` (ChatG
 
 Row count check: Fable 17 rows (F1 to F17), Codex 20 rows (C1 to C20). Decisions: ACCEPT 31, PARTIAL 4 (F11, C6, C7, C11), REJECT 2 (F17, C10).
 
-Method: every finding was traced to the code at HEAD 466018f before changing anything. Nothing here is VERIFIED: all results are the author's own local runs, see README for scope.
+Method: I traced every finding to the code at HEAD 466018f before changing anything. Nothing here is VERIFIED. All results are my own local runs; the README says what they cover.
 
 | # | Sev | Finding | Decision | What changed or why not |
 |---|---|---|---|---|
@@ -54,5 +54,5 @@ Method: every finding was traced to the code at HEAD 466018f before changing any
 - OWASP-style whole-field validation gap: addressed by the whole-value grammar for amounts, dates, references and parts.
 
 ## Order of work and first-run record
-Set C was written after the code fixes and before its first run. First run (saved in `evidence/evaluate-set-c-first-run.txt`): DocMatch 0 false auto-matches of 39, 25/25 traps flagged, 14/14 correct auto, 20/20 batch invoices right. No source file changed after that run (only tests and the mutation list), so the first run equals the final run. Because the cases were written knowing the fixes, a perfect score is expected and is not evidence of discovery power.
-Mutation: the first full run of the new list had 4 survivors (amount due fallback after a garbled total, fingerprint without subtotal, aggregate currency from the wrong part, lock removed). Three got tests; the aggregate-currency mutant is equivalent (the tracker already forces one currency) and was removed from the list.
+I wrote set C after the code fixes and before its first run. First run (saved in `evidence/evaluate-set-c-first-run.txt`): DocMatch 0 false auto-matches of 39, 25/25 traps flagged, 14/14 correct auto, 20/20 batch invoices right. No source file changed after that run (only tests and the mutation list), so the first run equals the final run. The cases were written knowing the fixes, so a perfect score was expected and is not evidence of discovery power.
+Mutation: the first full run of the new list had 4 survivors (amount due fallback after a garbled total, fingerprint without subtotal, aggregate currency from the wrong part, lock removed). Three got tests. The aggregate-currency mutant is equivalent (the tracker already forces one currency), so I removed it from the list.
