@@ -1,0 +1,29 @@
+impl=v2 mode=frozen  vouchers (tx+supplier): 53064  fed (total > 0): 50583
+fed by month: {'2025_JAN_Spend': 9546, '2025_FEB_Spend': 8531, '2025_MAR_Spend': 11407, '2025_APR_Spend': 9506, '2025_MAY_Spend': 11519, '2025_JUNE_SPEND': 74}
+config: {'w': 3, 'cadence': True, 'context': True}
+
+== WARM START: January to June fed in order, flags counted for April to June ==
+vouchers fed in scoring months: 21099  flagged possible_duplicate: 4184  share 19.8%
+flags by month: {'2025_APR_Spend': 1587, '2025_MAY_Spend': 2593, '2025_JUNE_SPEND': 4}
+verdict reasons over scoring months: {'first_seen': 10705, 'distinct': 239, 'near_no_cadence': 4077, 'outside_window': 4093, 'batch_surplus': 107, 'recurring_batch': 1878}
+distinct suppliers among flags: 270  flags from the 10 busiest: 1484
+10 busiest flagged suppliers: [('WELLINGTON HEALTHCARE ARDEN LTD', 260), ('EAST AND WEST HEALTHCARE LIMITED', 211), ('FRANKLIN CARE GROUP LTD', 211), ('QUALIA CARE LTD IN ADMINISTRATION', 142), ('POSSABILITIES CIC ISF', 123), ('O***(18)', 119), ('SPRINGFIELD PARK LTD', 118), ('THE RIVERSIDE GROUP  LTD', 104), ('CLEGGSWORTH CARE HOME LIMITED', 99), ('FRANKLIN CARE GROUP', 97)]
+sum of flagged voucher totals (GBP): 7064655.20
+
+== COLD START: April to June only ==
+vouchers fed in scoring months: 21099  flagged possible_duplicate: 5254  share 24.9%
+flags by month: {'2025_APR_Spend': 2522, '2025_MAY_Spend': 2728, '2025_JUNE_SPEND': 4}
+verdict reasons over scoring months: {'first_seen': 12638, 'near_no_cadence': 5219, 'distinct': 189, 'outside_window': 2214, 'batch_surplus': 35, 'recurring_batch': 804}
+distinct suppliers among flags: 279  flags from the 10 busiest: 2065
+10 busiest flagged suppliers: [('WELLINGTON HEALTHCARE ARDEN LTD', 369), ('EAST AND WEST HEALTHCARE LIMITED', 280), ('FRANKLIN CARE GROUP LTD', 279), ('THE RIVERSIDE GROUP  LTD', 219), ('QUALIA CARE LTD IN ADMINISTRATION', 194), ('POSSABILITIES CIC TRADING', 184), ('SPRINGFIELD PARK LTD', 157), ('FRANKLIN CARE GROUP', 135), ('POSSABILITIES CIC ISF', 129), ('O***(18)', 119)]
+sum of flagged voucher totals (GBP): 8389534.99
+
+planted duplicates on April to June (300 copies each, cold start; synthetic injection, not real duplicates):
+  shift 0: all 283/300  non-recurring keys 223/223  recurring keys 60/77
+  shift 1: all 300/300  non-recurring keys 223/223  recurring keys 77/77
+  shift 3: all 300/300  non-recurring keys 223/223  recurring keys 77/77
+  shift 10: all 12/300  non-recurring keys 4/223  recurring keys 8/77
+
+v1 flags in April to June: 6144  of which v2 does not flag: 2051  v2 flags that v1 did not flag: 91
+why v2 dropped them: {'outside_window': 97, 'distinct': 77, 'recurring_batch': 1873, 'first_seen': 4}
+sample sheets written to scratch (unmasked, not committed)

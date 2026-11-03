@@ -1,0 +1,24 @@
+receipts loaded: 200 Counter({'test': 100, 'validation': 100})
+scoreable (has total_price with digits): 193  left out: 7
+
+== variant R (primary, text as built) ==
+total CORRECT: 0/193  Wilson95 [0.0%, 2.0%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 193/193  Wilson95 [98.0%, 100.0%]
+vendor non-empty: 0  date non-empty: 0
+check_invoice clean (no reasons): 0
+top reasons: [('malformed', 193), ('total_unparseable', 16), ('subtotal_unparseable', 12), ('items_unparsed', 9), ('amount_due_unparseable', 1)]
+
+== variant C (diagnostic, 'total x' rewritten to 'Total: x') ==
+total CORRECT: 1/193  Wilson95 [0.1%, 2.9%]
+total WRONG: 2/193  Wilson95 [0.3%, 3.7%]
+total REFUSED: 190/193  Wilson95 [95.5%, 99.5%]
+vendor non-empty: 0  date non-empty: 0
+check_invoice clean (no reasons): 0
+top reasons: [('malformed', 193), ('total_unparseable', 124), ('subtotal_unparseable', 12), ('items_unparsed', 9), ('amount_due_unparseable', 1)]
+WRONG examples (split, idx, extracted, gt_raw, conf):
+   ('test', 41, '365000.00', '365000.00', 1.0)
+   ('test', 47, '63000.00', '63,000.00', 1.0)
+
+readable ceiling: 4/193 receipts have a token equal to the true total that money() accepts
+ground-truth totals written with a 3-digit group separator ('.' or ','): 185/193

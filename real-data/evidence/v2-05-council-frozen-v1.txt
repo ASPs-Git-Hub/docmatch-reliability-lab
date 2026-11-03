@@ -1,0 +1,19 @@
+impl=v1 mode=frozen  vouchers (tx+supplier): 53064  fed (total > 0): 50583
+fed by month: {'2025_JAN_Spend': 9546, '2025_FEB_Spend': 8531, '2025_MAR_Spend': 11407, '2025_APR_Spend': 9506, '2025_MAY_Spend': 11519, '2025_JUNE_SPEND': 74}
+config: v1 (as committed at bcf6ab2)
+
+== WARM START: January to June fed in order, flags counted for April to June ==
+vouchers fed in scoring months: 21099  flagged possible_duplicate: 6144  share 29.1%
+flags by month: {'2025_APR_Spend': 2544, '2025_MAY_Spend': 3596, '2025_JUNE_SPEND': 4}
+distinct suppliers among flags: 272  flags from the 10 busiest: 2529
+10 busiest flagged suppliers: [('WELLINGTON HEALTHCARE ARDEN LTD', 503), ('FRANKLIN CARE GROUP LTD', 357), ('EAST AND WEST HEALTHCARE LIMITED', 356), ('QUALIA CARE LTD IN ADMINISTRATION', 255), ('THE RIVERSIDE GROUP  LTD', 219), ('SPRINGFIELD PARK LTD', 201), ('POSSABILITIES CIC TRADING', 186), ('FRANKLIN CARE GROUP', 181), ('ANTONI AND RIENZIE LTD', 141), ('HC ONE LTD', 130)]
+sum of flagged voucher totals (GBP): 9493804.02
+
+== COLD START: April to June only ==
+vouchers fed in scoring months: 21099  flagged possible_duplicate: 6144  share 29.1%
+flags by month: {'2025_APR_Spend': 2544, '2025_MAY_Spend': 3596, '2025_JUNE_SPEND': 4}
+distinct suppliers among flags: 272  flags from the 10 busiest: 2529
+10 busiest flagged suppliers: [('WELLINGTON HEALTHCARE ARDEN LTD', 503), ('FRANKLIN CARE GROUP LTD', 357), ('EAST AND WEST HEALTHCARE LIMITED', 356), ('QUALIA CARE LTD IN ADMINISTRATION', 255), ('THE RIVERSIDE GROUP  LTD', 219), ('SPRINGFIELD PARK LTD', 201), ('POSSABILITIES CIC TRADING', 186), ('FRANKLIN CARE GROUP', 181), ('ANTONI AND RIENZIE LTD', 141), ('HC ONE LTD', 130)]
+sum of flagged voucher totals (GBP): 9493804.02
+
+flags (April to June) whose earlier voucher has a DIFFERENT vendor_identity (joined only by norm_vendor): 181

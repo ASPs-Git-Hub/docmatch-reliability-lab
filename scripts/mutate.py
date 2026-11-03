@@ -5,6 +5,9 @@ Groups (reported separately, never as one bare percentage):
   fable18  18 unplanned mutants from the round 1 Fable review (9 survived then; 3 are retired because the code
            they mutated was removed by the fixes, see REVIEW_ROUND2.md)
   round2   mutants written for the round 2 behaviours, after the tests; same caveat as orig31: hand-picked
+  v2       mutants for the v2 changes (numfmt.py number conventions, recurrence-aware DuplicateDetector, vendor_identity keys);
+           hand-picked after the v2 tests. Three v1 mutants whose code the v2 detector replaced are re-pointed at the new code
+           (parts_flagged_as_duplicates, po_content_key_off, po_content_key_same_number_flagged).
 Outcome classes: KILLED (test assertion or error: the suite reports FAILED with N>0 tests run), CRASH (timeout,
 or no tests ran, e.g. import error: not counted as a kill), SURVIVED, PATTERN-ERROR.
 Exit 1 if anything survives, crashes, or a pattern does not occur exactly once.
@@ -18,8 +21,8 @@ import sys
 import tempfile
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-M, X, V, Q, P, U = ("src/docmatch/match.py", "src/docmatch/extract.py", "src/docmatch/validate.py",
-                    "src/docmatch/queue.py", "src/docmatch/pipeline.py", "src/docmatch/util.py")
+M, X, V, Q, P, U, N = ("src/docmatch/match.py", "src/docmatch/extract.py", "src/docmatch/validate.py",
+                       "src/docmatch/queue.py", "src/docmatch/pipeline.py", "src/docmatch/util.py", "src/docmatch/numfmt.py")
 
 # (group, name, file relative to ROOT, old text, new text)
 MUTANTS = [
@@ -42,7 +45,7 @@ MUTANTS = [
 ("orig", "one_cent_flagged", V, "if abs(expected - inv.total) > CENT:", "if abs(expected - inv.total) >= CENT:"),
 ("orig", "subtotal_check_off", V, "if inv.subtotal is not None and abs(line_sum - inv.subtotal) > CENT:", "if False:"),
 ("orig", "resubmission_inverted", V, "self.by_id[k] == fingerprint(inv)", "self.by_id[k] != fingerprint(inv)"),
-("orig", "parts_flagged_as_duplicates", V, "ck = (norm_vendor(inv.vendor), inv.total, inv.date)\n        other = self.by_content.get(ck)\n        if other is not None and other != inv.invoice_no:", "ck = (norm_vendor(inv.vendor), inv.total, inv.date)\n        other = self.by_content.get(ck)\n        if other is not None:"),
+("orig", "parts_flagged_as_duplicates", V, " if e[1] != inv.invoice_no]", "]"),
 ("orig", "parts_complete_too_early", V, 'if len(g["parts"]) == n:', 'if len(g["parts"]) >= 1:'),
 ("orig", "part_count_conflict_ignored", V, 'g["n"] != n or ', ""),
 ("orig", "part_total_conflict_inverted", V, 'g["parts"][i].total != inv.total', 'g["parts"][i].total == inv.total'),
@@ -71,10 +74,10 @@ MUTANTS = [
 ("fable18", "queue_abs_off", Q, "float(abs(amount))", "float(amount)"),
 ("fable18", "suffix_set_empty", U, "_SUFFIXES = set(_SUFFIX_CANON)", "_SUFFIXES = set()"),
 ("round2", "consumed_check_off", P, "prior = self.consumed.get(res.po_id)", "prior = None"),
-("round2", "consumption_not_recorded", P, "self.consumed.setdefault(res.po_id, []).append((norm_vendor(inv.vendor), inv.invoice_no, inv.total))", "pass"),
+("round2", "consumption_not_recorded", P, "self.consumed.setdefault(res.po_id, []).append((vendor_identity(inv.vendor), inv.invoice_no, inv.total))", "pass"),
 ("round2", "overbilled_reason_dropped", P, "if not within_tolerance(billed, _po_total(po), self.cfg):", "if False:"),
-("round2", "po_content_key_off", V, "other = self.by_po.get((norm_vendor(inv.vendor), inv.total, inv.currency, inv.po_ref))", "other = None"),
-("round2", "po_content_key_same_number_flagged", V, "other = self.by_po.get((norm_vendor(inv.vendor), inv.total, inv.currency, inv.po_ref))\n            if other is not None and other != inv.invoice_no:", "other = self.by_po.get((norm_vendor(inv.vendor), inv.total, inv.currency, inv.po_ref))\n            if other is not None:"),
+("round2", "po_content_key_off", V, "if inv.po_ref and any(e[2] == inv.po_ref for e in earlier):", "if False:"),
+("round2", "po_content_key_same_number_flagged", V, "any(e[2] == inv.po_ref for e in earlier)", "any(e[2] == inv.po_ref for e in self.by_key.get(self.event_key(inv), []))"),
 ("round2", "unlabelled_ref_gate_off", M, "if inv.ref_tokens:", "if False:"),
 ("round2", "twin_outside_window_off", M, "if len(t2_all) > len(t2):", "if False:"),
 ("round2", "tier2_currency_prefilter_off", M, '== (inv.currency or "").upper()]\n    t2 = ', ']\n    t2 = '),
@@ -97,7 +100,7 @@ MUTANTS = [
 ("round2", "currency_conflict_off", X, 'issues.append("conflicting_currency")', "pass"),
 ("round2", "currency_symbol_only_off", X, 'issues.append("currency_symbol_only")', "pass"),
 ("round2", "symbol_set_conflict_off", X, 'issues.append("conflicting_currency_symbols")', "pass"),
-("round2", "items_unparsed_off", X, '        else:\n            issues.append("items_unparsed")\n', "        else:\n            pass\n"),
+("round2", "items_unparsed_off", X, '    if n_unparsed:\n        issues.append("items_unparsed")\n', '    if n_unparsed:\n        pass\n'),
 ("round2", "items_header_empty_off", X, 'if _RE_ITEMS_HDR.search(text) and not candidates:', "if False:"),
 ("round2", "line_arithmetic_off", V, "if abs((qty * unit).quantize(CENT, ROUND_HALF_UP) - amt) > CENT:", "if False:"),
 ("round2", "subtotal_without_items_off", V, "elif inv.subtotal is not None and abs(inv.subtotal + (inv.tax or Decimal(0)) - inv.total) > CENT:", "elif False:"),
@@ -119,6 +122,58 @@ MUTANTS = [
 ("round2", "po_ref_invalid_not_flagged", X, 'issues.append("po_ref_invalid")', "pass"),
 ("round2", "po_conflict_not_flagged", X, 'issues.append("conflicting_po_ref")', "pass"),
 ("round2", "date_fallback_restored", X, 'inv.date, c["date"] = None, 0.0', 'inv.date, c["date"] = (_m.group(1), 0.6) if (_m := re.search(r"(\\d{4}-\\d{2}-\\d{2})", text)) else (None, 0.0)'),
+("v2", "num_group_first_zero_allowed", N, 'bool(re.fullmatch(r"[1-9]\\d{0,2}", first))', 'bool(re.fullmatch(r"\\d{1,3}", first))'),
+("v2", "num_fraction_four_digits", N, '_FRAC = re.compile(r"\\d{1,3}")', '_FRAC = re.compile(r"\\d{1,4}")'),
+("v2", "num_minor_digits_limit_off", N, "if digits is not None and len(fp) > digits:", "if False:"),
+("v2", "num_minor_digits_off_by_one", N, "if digits is not None and len(fp) > digits:", "if digits is not None and len(fp) > digits + 1:"),
+("v2", "num_group_of_two_allowed", N, 'all(re.fullmatch(r"\\d{3}", g) for g in rest)', 'all(re.fullmatch(r"\\d{2,3}", g) for g in rest)'),
+("v2", "num_double_sign_allowed", N, "if s1 and s2:\n        return None", "if False:\n        return None"),
+("v2", "num_sign_dropped", N, "return -v if (s1 or s2) else v", "return v"),
+("v2", "num_plain_digits_15", N, '_PLAIN = re.compile(r"\\d{1,12}")', '_PLAIN = re.compile(r"\\d{1,15}")'),
+("v2", "num_two_decimal_marks_allowed", N, "if body.count(dec) > 1:", "if body.count(dec) > 2:"),
+("v2", "num_idr_not_zero_decimal", N, '"XPF", "IDR"}', '"XPF"}'),
+("v2", "num_three_decimal_currencies_off", N, '_THREE_DECIMAL = {"BHD", "IQD", "JOD", "KWD", "LYD", "OMR", "TND"}', "_THREE_DECIMAL = set()"),
+("v2", "num_not_2dp_gate_off", N, "if v != v.quantize(CENT):\n            values[n] = None", "if False:\n            values[n] = None"),
+("v2", "num_values_not_quantised", N, "values[n] = v.quantize(CENT)", "values[n] = v"),
+("v2", "num_mixed_styles_not_detected", N, "common = [c for c in CONVS if all(c in d for d in live.values())]", "common = [c for c in CONVS if any(c in d for d in live.values())]"),
+("v2", "num_ambiguity_guessed", N, "chosen = loc if loc in common else arith_pick", "chosen = loc if loc in common else (arith_pick or common[0])"),
+("v2", "num_locale_ignored", N, "chosen = loc if loc in common else arith_pick", "chosen = arith_pick"),
+("v2", "num_arithmetic_ignored", N, "chosen = loc if loc in common else arith_pick", "chosen = loc if loc in common else None"),
+("v2", "num_locale_arithmetic_conflict_off", N, "if loc and arith_pick and loc != arith_pick:", "if False:"),
+("v2", "num_arithmetic_tie_picks_first", N, "arith_pick = arith[0] if len(arith) == 1 else None", "arith_pick = arith[0] if arith else None"),
+("v2", "num_close_exclusive", N, "return abs(a - b) <= CENT", "return abs(a - b) < CENT"),
+("v2", "num_line_relation_off", N, "checks.append(_close((qty * unit).quantize(CENT), amt))", "pass"),
+("v2", "num_item_sum_relation_off", N, "checks.append(_close(line_sum, sub))", "pass"),
+("v2", "num_total_relation_off", N, "checks.append(_close(base + (tax if tax is not None else Decimal(0)), tot))", "pass"),
+("v2", "num_missing_tax_not_zero", N, "(tax if tax is not None else Decimal(0)), tot))", "(tax if tax is not None else Decimal(1)), tot))"),
+("v2", "num_partial_item_sum_used", N, "if amts and len(amts) == len(items) else None", "if amts else None"),
+("v2", "num_inferred_flag_off", N, 'if len(no_cur[n]) == 2 and len({v for v in no_cur[n].values()}) > 1:', "if False:"),
+("v2", "num_evidence_labels_swapped", N, 'evidence.append("currency" if len(with_cur[n]) == 1 else "document_convention")', 'evidence.append("document_convention" if len(with_cur[n]) == 1 else "currency")'),
+("v2", "num_mixed_keeps_separator_tokens", N, '            else:\n                issues.append(f"{n}_unparseable")', '            else:\n                values[n] = next(iter(d.values()))'),
+("v2", "extract_assume_currency_dropped", X, "inv.currency, assume_currency, loc)", "inv.currency, None, loc)"),
+("v2", "extract_locale_ignored", X, "loc = _single(_RE_LOCALE, text, \"locale\", issues)", "loc = None"),
+("v2", "extract_inferred_total_full_confidence", X, 'inv.total, c["total"] = total, 0.7 if "total" in inferred else 1.0', 'inv.total, c["total"] = total, 1.0'),
+("v2", "extract_item_issue_names_leak", X, 'issues.extend(i for i in num_issues if not i.startswith("item"))', "issues.extend(num_issues)"),
+("v2", "cadence_weekly_wider", V, "CADENCES = ((5, 9),", "CADENCES = ((5, 10),"),
+("v2", "cadence_fortnightly_wider", V, "(12, 16),", "(12, 17),"),
+("v2", "cadence_monthly_wider", V, "(26, 35))", "(26, 36))"),
+("v2", "cadence_classes_not_compared", V, "if k is not None and k == _cadence_class(g2):", "if k is not None:"),
+("v2", "cadence_no_end_position", V, "for start in (i - 2, i - 1, i):", "for start in (i - 2, i - 1):"),
+("v2", "cadence_no_start_position", V, "for start in (i - 2, i - 1, i):", "for start in (i, i - 1):"),
+("v2", "cadence_bounds_off", V, "if start < 0 or start + 2 >= len(u):", "if start < 0:"),
+("v2", "dup_window_exclusive", V, "abs((e[0] - d).days) <= self.window_days)]", "abs((e[0] - d).days) < self.window_days)]"),
+("v2", "dup_same_reference_off", V, "if inv.po_ref and any(e[2] == inv.po_ref for e in earlier):", "if False:"),
+("v2", "dup_distinct_refs_off", V, "if e[2] and inv.po_ref and e[2] != inv.po_ref:", "if False:"),
+("v2", "dup_distinct_context_off", V, "return bool(self.use_context and e[3] is not None and inv.context is not None and e[3] != inv.context)", "return False"),
+("v2", "dup_currency_not_in_key", V, "return (vendor_identity(inv.vendor), inv.total, inv.currency)", "return (vendor_identity(inv.vendor), inv.total)"),
+("v2", "dup_event_key_uses_stripped_name", V, "return (vendor_identity(inv.vendor), inv.total, inv.currency)", 'return (vendor_identity(inv.vendor).split("|")[0], inv.total, inv.currency)'),
+("v2", "dup_id_key_uses_raw_name", V, "return (vendor_identity(inv.vendor), inv.invoice_no, inv.part)", 'return ((inv.vendor or "").lower(), inv.invoice_no, inv.part)'),
+("v2", "dup_part_group_uses_stripped_name", V, "return (vendor_identity(inv.vendor), inv.invoice_no, inv.po_ref)", 'return (vendor_identity(inv.vendor).split("|")[0], inv.invoice_no, inv.po_ref)'),
+("v2", "dup_cadence_off", V, "if self.use_cadence and d is not None:", "if d is not None:"),
+("v2", "dup_batch_surplus_off_by_one", V, "if any(n >= counts[d] + 1 for dd, n in counts.items() if dd != d):", "if any(n >= counts[d] for dd, n in counts.items() if dd != d):"),
+("v2", "dup_new_date_in_cadence_flagged", V, "if d not in counts:\n                    return None, \"recurring_batch\"", "if False:\n                    return None, \"recurring_batch\""),
+("v2", "dup_missing_dates_not_compared", V, "(e[0] is None and d is None) or", "False or"),
+("v2", "dup_context_off_ignored", V, "return bool(self.use_context and", "return bool(True and"),
 ]
 
 

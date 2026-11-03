@@ -1,0 +1,4 @@
+impl=v1 mode=tune  vouchers (tx+supplier): 53064  fed (total > 0): 50583
+fed by month: {'2025_JAN_Spend': 9546, '2025_FEB_Spend': 8531, '2025_MAR_Spend': 11407, '2025_APR_Spend': 9506, '2025_MAY_Spend': 11519, '2025_JUNE_SPEND': 74}
+development vouchers: 29484; vouchers on a recurring key (>= 3 distinct dates for supplier+amount): 12133
+cfg=v1 | flagged 8459/29484 = 28.7% | shift0: all 300/300 nonrec 172/172 rec 128/128 | shift1: all 10/300 nonrec 0/172 rec 10/128 | shift3: all 10/300 nonrec 0/172 rec 10/128 | shift10: all 10/300 nonrec 0/172 rec 10/128

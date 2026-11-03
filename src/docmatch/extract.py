@@ -11,7 +11,8 @@ import re
 from dataclasses import dataclass, field
 from decimal import Decimal
 
-from .util import money, norm_ref
+from .numfmt import resolve
+from .util import norm_ref
 
 MAX_PARTS = 100
 _SYMBOLS = {"$": "USD", "€": "EUR", "£": "GBP"}
@@ -38,6 +39,7 @@ _RE_PO_TOKEN = re.compile(r"\bPO[-/]?(?=[A-Z0-9]*\d)[A-Z0-9]+\b", re.I)
 _RE_VENDOR = _line_rx(r"(?:Vendor|Supplier|From)[ \t]*:")
 _RE_DATE = _line_rx(r"(?:Invoice[ \t]+)?Date[ \t]*:")
 _RE_CUR = _line_rx(r"Currency[ \t]*:")
+_RE_LOCALE = _line_rx(r"(?:Locale|Number[ \t]+format)[ \t]*:")
 _RE_SUB = _line_rx(r"Subtotal[ \t]*:")
 _RE_TAX = _line_rx(r"Tax[ \t]*:")
 _RE_TOTAL = _line_rx(r"Total[ \t]*:")
@@ -64,6 +66,8 @@ class Invoice:
     conf: dict = field(default_factory=dict)
     issues: list = field(default_factory=list)  # extraction refusals, become review reasons
     ref_tokens: list = field(default_factory=list)  # PO-shaped tokens seen anywhere in the text
+    format_evidence: list = field(default_factory=list)  # what decided an ambiguous number style (numfmt.resolve)
+    context: object = None  # optional hashable label from the caller (cost code, purpose); extract() never sets it
 
 
 def _all(rx, text):
@@ -78,23 +82,15 @@ def _single(rx, text, name, issues):
     return vals[0] if vals else None
 
 
-def _amount(rx, text, name, issues):
-    """Return (Decimal or None, raw). Labelled but unparseable values record `<name>_unparseable`."""
-    raw = _single(rx, text, name, issues)
-    if raw is None:
-        return None, None
-    v = money(raw)
-    if v is None:
-        issues.append(f"{name}_unparseable")
-    return v, raw
-
-
 def _symbol_codes(raw):
     return {_SYMBOLS[s] for s in _SYMBOLS if raw and s in raw}
 
 
-def extract(text):
-    """Never raises: non-string or garbage input yields an Invoice with missing fields."""
+def extract(text, assume_currency=None):
+    """Never raises: non-string or garbage input yields an Invoice with missing fields.
+
+    assume_currency: optional ISO code supplied by the caller (a deployment-level fact). It is used ONLY to decide how
+    amounts are written (minor-unit count), never to set inv.currency."""
     inv = Invoice()
     if not isinstance(text, str):
         text = ""
@@ -137,21 +133,6 @@ def extract(text):
             inv.date, c["date"] = v, 1.0
         except ValueError:
             issues.append("date_invalid")
-    # amounts
-    inv.subtotal, raw_sub = _amount(_RE_SUB, text, "subtotal", issues)
-    inv.tax, raw_tax = _amount(_RE_TAX, text, "tax", issues)
-    c["subtotal"] = 1.0 if inv.subtotal is not None else 0.0
-    c["tax"] = 1.0 if inv.tax is not None else 0.0
-    total, raw_total = _amount(_RE_TOTAL, text, "total", issues)
-    alt, raw_alt = _amount(_RE_TOTAL_ALT, text, "amount_due", issues)
-    if total is not None:
-        inv.total, c["total"] = total, 1.0
-        if alt is not None and alt != total:
-            issues.append("amount_due_differs_from_total")
-    elif alt is not None and raw_total is None:
-        inv.total, c["total"] = alt, 0.7  # weaker label: gated to review by match()
-    else:
-        c["total"] = 0.0
     # currency: explicit code only. A bare symbol is ambiguous ($ = USD/CAD/AUD...), so it is never inferred.
     v = _single(_RE_CUR, text, "currency", issues)
     inv.currency, c["currency"] = None, 0.0
@@ -160,6 +141,40 @@ def extract(text):
             inv.currency, c["currency"] = v.upper(), 1.0
         else:
             issues.append("currency_invalid")
+    # amounts: read under ONE number convention for the whole document (numfmt.resolve); ambiguous tokens need evidence
+    raw_sub = _single(_RE_SUB, text, "subtotal", issues)
+    raw_tax = _single(_RE_TAX, text, "tax", issues)
+    raw_total = _single(_RE_TOTAL, text, "total", issues)
+    raw_alt = _single(_RE_TOTAL_ALT, text, "amount_due", issues)
+    tokens = {n: r for n, r in (("subtotal", raw_sub), ("tax", raw_tax), ("total", raw_total), ("amount_due", raw_alt)) if r is not None}
+    rows = []  # (desc, qty, index) for item rows whose tokens enter the number resolution
+    n_unparsed = 0
+    candidates = [m.group(1) for m in _RE_BULLET.finditer(text)]
+    for cand in candidates:
+        m = _RE_ITEM.match(cand)
+        if m:
+            d, qty, unit, amt = m.groups()
+            i = len(rows)
+            rows.append((d, Decimal(qty), i))
+            tokens[f"item{i}_unit"], tokens[f"item{i}_amt"] = unit, amt
+        else:
+            n_unparsed += 1
+    loc = _single(_RE_LOCALE, text, "locale", issues)
+    vals, num_issues, inferred, evidence = resolve(tokens, [(i, q) for _d, q, i in rows], inv.currency, assume_currency, loc)
+    issues.extend(i for i in num_issues if not i.startswith("item"))
+    inv.format_evidence = evidence
+    inv.subtotal, inv.tax = vals.get("subtotal"), vals.get("tax")
+    c["subtotal"] = (0.7 if "subtotal" in inferred else 1.0) if inv.subtotal is not None else 0.0
+    c["tax"] = (0.7 if "tax" in inferred else 1.0) if inv.tax is not None else 0.0
+    total, alt = vals.get("total"), vals.get("amount_due")
+    if total is not None:
+        inv.total, c["total"] = total, 0.7 if "total" in inferred else 1.0
+        if alt is not None and alt != total:
+            issues.append("amount_due_differs_from_total")
+    elif alt is not None and raw_total is None:
+        inv.total, c["total"] = alt, 0.7  # weaker label: gated to review by match()
+    else:
+        c["total"] = 0.0
     sym_codes = set()
     for raw in (raw_total, raw_sub, raw_tax, raw_alt):
         sym_codes |= _symbol_codes(raw)
@@ -170,19 +185,14 @@ def extract(text):
     elif inv.currency and sym_codes and not (inv.currency == "USD" and "USD" in sym_codes) and inv.currency not in sym_codes:
         issues.append("conflicting_currency")
     # item rows
-    candidates = [m.group(1) for m in _RE_BULLET.finditer(text)]
-    for cand in candidates:
-        m = _RE_ITEM.match(cand)
-        row = None
-        if m:
-            d, qty, unit, amt = m.groups()
-            unit_v, amt_v = money(unit), money(amt)
-            if unit_v is not None and amt_v is not None:
-                row = (d, Decimal(qty), unit_v, amt_v)
-        if row:
-            inv.items.append(row)
+    for d, qty, i in rows:
+        unit_v, amt_v = vals.get(f"item{i}_unit"), vals.get(f"item{i}_amt")
+        if unit_v is not None and amt_v is not None:
+            inv.items.append((d, qty, unit_v, amt_v))
         else:
-            issues.append("items_unparsed")
+            n_unparsed += 1
+    if n_unparsed:
+        issues.append("items_unparsed")
     if _RE_ITEMS_HDR.search(text) and not candidates:
         issues.append("items_unparsed")
     c["items"] = 1.0 if inv.items else 0.0

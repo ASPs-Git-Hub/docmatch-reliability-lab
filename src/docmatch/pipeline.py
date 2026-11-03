@@ -11,7 +11,7 @@ from decimal import Decimal
 from .extract import Invoice, extract
 from .match import MatchConfig, _po_total, match, within_tolerance
 from .queue import ExceptionQueue
-from .util import norm_vendor
+from .util import vendor_identity
 from .validate import DuplicateDetector, PartTracker, check_invoice
 
 
@@ -48,7 +48,7 @@ class DocMatch:
 
     def _review(self, inv, reasons, out, text="", res=None, status=None):
         digest = hashlib.sha256(str(text).encode("utf-8", "backslashreplace")).hexdigest()
-        key = (norm_vendor(inv.vendor), inv.invoice_no or "UNPARSED-" + digest)
+        key = (vendor_identity(inv.vendor), inv.invoice_no or "UNPARSED-" + digest)
         for r in reasons:
             self.queue.add(key, r, inv.total or 0, inv.date)
         out["needs_review"].append(self._entry(inv, status or (res.status if res else "INVALID"), reasons, res))
@@ -68,7 +68,7 @@ class DocMatch:
                 res.candidates = [res.po_id]
                 self._review(inv, reasons, out, text, res)
                 return
-            self.consumed.setdefault(res.po_id, []).append((norm_vendor(inv.vendor), inv.invoice_no, inv.total))
+            self.consumed.setdefault(res.po_id, []).append((vendor_identity(inv.vendor), inv.invoice_no, inv.total))
             out["auto_matched"].append(self._entry(inv, "MATCH", [], res))
         else:
             self._review(inv, res.reasons, out, text, res)
@@ -111,6 +111,6 @@ class DocMatch:
             agg = Invoice(invoice_no=first.invoice_no, po_ref=first.po_ref, vendor=first.vendor, date=first.date,
                           currency=first.currency, conf=dict(first.conf))
             agg.total = sum((p.total for p in parts.values()), Decimal(0))
-            key = (norm_vendor(inv.vendor), inv.invoice_no)
+            key = (vendor_identity(inv.vendor), inv.invoice_no)
             self.queue.resolve(key, "parts_incomplete")
             self._finish_match(agg, out, text)

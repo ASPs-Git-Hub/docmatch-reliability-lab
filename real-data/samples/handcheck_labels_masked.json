@@ -1,0 +1,444 @@
+{
+ "dup_flags": [
+  {
+   "i": 0,
+   "supplier": "FRANKLIN CARE GROUP",
+   "total": "1422.00",
+   "date": "2025-01-10",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 968,
+   "label": "LEGIT"
+  },
+  {
+   "i": 1,
+   "supplier": "L***(31)",
+   "total": "1422.00",
+   "date": "2025-01-24",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 554,
+   "label": "LEGIT"
+  },
+  {
+   "i": 2,
+   "supplier": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "total": "1546.00",
+   "date": "2025-01-24",
+   "purpose": "NURSING LONG TERM",
+   "suppliers_with_same_total": 21,
+   "tx_gap": 1155,
+   "label": "LEGIT"
+  },
+  {
+   "i": 3,
+   "supplier": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "total": "1393.20",
+   "date": "2025-01-24",
+   "purpose": "SHORT TERM CARE - RESIDENTIAL",
+   "suppliers_with_same_total": 13,
+   "tx_gap": 497,
+   "label": "LEGIT"
+  },
+  {
+   "i": 4,
+   "supplier": "PANORAMIC ASSOCIATES LTD",
+   "total": "2750.00",
+   "date": "2025-02-10",
+   "purpose": "AGENCY STAFF",
+   "suppliers_with_same_total": 11,
+   "tx_gap": 1563,
+   "label": "LEGIT"
+  },
+  {
+   "i": 5,
+   "supplier": "LILY CARE LIMITED",
+   "total": "1432.00",
+   "date": "2025-04-17",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 33,
+   "tx_gap": 223,
+   "label": "LEGIT"
+  },
+  {
+   "i": 6,
+   "supplier": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "total": "1432.00",
+   "date": "2025-04-17",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 33,
+   "tx_gap": 401,
+   "label": "LEGIT"
+  },
+  {
+   "i": 7,
+   "supplier": "ACTION FIRST ASSESSMENTS LTD",
+   "total": "650.00",
+   "date": "2025-05-22",
+   "purpose": "FEES / COMMISSION",
+   "suppliers_with_same_total": 18,
+   "tx_gap": 4,
+   "label": "LEGIT"
+  },
+  {
+   "i": 8,
+   "supplier": "FRANKLIN CARE GROUP LTD",
+   "total": "1422.00",
+   "date": "2025-01-24",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 521,
+   "label": "LEGIT"
+  },
+  {
+   "i": 9,
+   "supplier": "BROOKDALE CARE HOME LTD",
+   "total": "1389.70",
+   "date": "2025-01-10",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 2,
+   "label": "SUSPICIOUS"
+  },
+  {
+   "i": 10,
+   "supplier": "CALDERDALE HOMECARE LTD",
+   "total": "180.96",
+   "date": "2025-04-04",
+   "purpose": "HOME CARE - ADULT SERVICES",
+   "suppliers_with_same_total": 7,
+   "tx_gap": 35,
+   "label": "LEGIT"
+  },
+  {
+   "i": 11,
+   "supplier": "EAST AND WEST HEALTHCARE LIMITED",
+   "total": "1546.00",
+   "date": "2025-02-07",
+   "purpose": "NURSING LONG TERM",
+   "suppliers_with_same_total": 21,
+   "tx_gap": 1085,
+   "label": "LEGIT"
+  },
+  {
+   "i": 12,
+   "supplier": "S***(27)",
+   "total": "1266.72",
+   "date": "2025-04-04",
+   "purpose": "HOME CARE - ADULT SERVICES",
+   "suppliers_with_same_total": 8,
+   "tx_gap": 295,
+   "label": "LEGIT"
+  },
+  {
+   "i": 13,
+   "supplier": "R***(20)",
+   "total": "1176.24",
+   "date": "2025-05-02",
+   "purpose": "HOME CARE - ADULT SERVICES",
+   "suppliers_with_same_total": 6,
+   "tx_gap": 25,
+   "label": "LEGIT"
+  },
+  {
+   "i": 14,
+   "supplier": "WERNETH LODGE LTD",
+   "total": "1393.20",
+   "date": "2025-05-06",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 13,
+   "tx_gap": 1,
+   "label": "UNSURE"
+  },
+  {
+   "i": 15,
+   "supplier": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "total": "1442.00",
+   "date": "2025-05-02",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 32,
+   "tx_gap": 654,
+   "label": "LEGIT"
+  },
+  {
+   "i": 16,
+   "supplier": "VESTACARE  UK LTD",
+   "total": "1724.64",
+   "date": "2025-03-28",
+   "purpose": "RESIDENTIAL RESPITE - ADULT SERVICES",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 1,
+   "label": "SUSPICIOUS"
+  },
+  {
+   "i": 17,
+   "supplier": "SRL TECHNICAL SERVICES LTD",
+   "total": "4825.00",
+   "date": "2025-01-27",
+   "purpose": "CONSULTANTS FEES",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 3257,
+   "label": "UNSURE"
+  },
+  {
+   "i": 18,
+   "supplier": "I***(16)",
+   "total": "23303.28",
+   "date": "2025-01-31",
+   "purpose": "SUPPORTED LIVING",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 1,
+   "label": "SUSPICIOUS"
+  },
+  {
+   "i": 19,
+   "supplier": "H***(24)",
+   "total": "1422.00",
+   "date": "2025-03-21",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 211,
+   "label": "LEGIT"
+  },
+  {
+   "i": 20,
+   "supplier": "BELVOIR CARE HOME LIMITED",
+   "total": "1422.00",
+   "date": "2025-05-16",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 182,
+   "label": "LEGIT"
+  },
+  {
+   "i": 21,
+   "supplier": "PURE INNOVATIONS LIMITED",
+   "total": "818.76",
+   "date": "2025-01-31",
+   "purpose": "DAY CARE",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 27,
+   "label": "UNSURE"
+  },
+  {
+   "i": 22,
+   "supplier": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "total": "1546.00",
+   "date": "2025-02-21",
+   "purpose": "NURSING LONG TERM",
+   "suppliers_with_same_total": 21,
+   "tx_gap": 1103,
+   "label": "LEGIT"
+  },
+  {
+   "i": 23,
+   "supplier": "L***(31)",
+   "total": "1422.00",
+   "date": "2025-04-17",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 972,
+   "label": "LEGIT"
+  },
+  {
+   "i": 24,
+   "supplier": "5***(9)",
+   "total": "420.00",
+   "date": "2025-03-31",
+   "purpose": "CONFERENCE",
+   "suppliers_with_same_total": 17,
+   "tx_gap": 6219,
+   "label": "LEGIT"
+  },
+  {
+   "i": 25,
+   "supplier": "S***(27)",
+   "total": "1780.80",
+   "date": "2025-01-31",
+   "purpose": "SUPPORTED LIVING",
+   "suppliers_with_same_total": 5,
+   "tx_gap": 1,
+   "label": "UNSURE"
+  },
+  {
+   "i": 26,
+   "supplier": "M***(17)",
+   "total": "1422.00",
+   "date": "2025-02-21",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 947,
+   "label": "LEGIT"
+  },
+  {
+   "i": 27,
+   "supplier": "GP CARE SERVICES LTD",
+   "total": "2582.08",
+   "date": "2025-02-21",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 424,
+   "label": "UNSURE"
+  },
+  {
+   "i": 28,
+   "supplier": "FRANKLIN CARE GROUP",
+   "total": "1422.00",
+   "date": "2025-03-21",
+   "purpose": "RESIDENTIAL LONG TERM",
+   "suppliers_with_same_total": 35,
+   "tx_gap": 335,
+   "label": "LEGIT"
+  },
+  {
+   "i": 29,
+   "supplier": "THE RIVERSIDE GROUP  LTD",
+   "total": "163.32",
+   "date": "2025-05-02",
+   "purpose": "EXTRA CARE HOUSING EXPENDITURE",
+   "suppliers_with_same_total": 1,
+   "tx_gap": 818,
+   "label": "UNSURE"
+  }
+ ],
+ "pairs": [
+  {
+   "i": 0,
+   "a": "F***(24)",
+   "b": "FISHERFIELD FARM NURSERY LTD",
+   "label": "SAME"
+  },
+  {
+   "i": 1,
+   "a": "WELLINGTON HEALTHCARE ARDEN LTD",
+   "b": "WELLINGTON HEALTHCARE LTD",
+   "label": "UNSURE"
+  },
+  {
+   "i": 2,
+   "a": "UNIVERSAL AV SERVICES LTD",
+   "b": "UNIVERSAL LAUNDRY SERVICES",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 3,
+   "a": "S***(28)",
+   "b": "S***(26)",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 4,
+   "a": "FRANKLIN CARE GROUP",
+   "b": "FRANKLIN CARE GROUP LTD",
+   "label": "SAME"
+  },
+  {
+   "i": 5,
+   "a": "MANCHESTER CABINS LIMITED",
+   "b": "M***(17)",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 6,
+   "a": "MANCHESTER UNIVERSITY NHS FOUNDATION TRUST MFT",
+   "b": "MANCHESTER UNIVERSITY NHS FOUNDATION TRUST",
+   "label": "SAME"
+  },
+  {
+   "i": 7,
+   "a": "PARENTS PLUS LTD",
+   "b": "P***(9)",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 8,
+   "a": "B***(16)",
+   "b": "BIG LIFE CENTRES LTD",
+   "label": "SAME"
+  },
+  {
+   "i": 9,
+   "a": "HCRG CARE SERVICES LTD",
+   "b": "HG CARE SERVICES LTD",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 10,
+   "a": "K***(19)",
+   "b": "K***(19)",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 11,
+   "a": "HEXAGON CARE SERVICES LTD",
+   "b": "HG CARE SERVICES LTD",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 12,
+   "a": "INSPIREDSPACES ROCHDALE PROJECT CO1 LTD",
+   "b": "INSPIREDSPACES ROCHDALE PROJECTCO2 LTD",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 13,
+   "a": "OCTOPUS ENERGY LTD",
+   "b": "OPUS ENERGY LTD",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 14,
+   "a": "BRAHM FUNDCO 1 LTD",
+   "b": "BRAHM FUNDCO 2 LTD",
+   "label": "DIFFERENT"
+  },
+  {
+   "i": 15,
+   "a": "HEALEY CARE LTD",
+   "b": "HEALYCARE LTD",
+   "label": "UNSURE"
+  }
+ ],
+ "merge": [
+  {
+   "i": 0,
+   "variants": [
+    "BRITISH GAS TRADING LIMITED",
+    "BRITISH GAS TRADING LTD"
+   ],
+   "label": "CORRECT"
+  },
+  {
+   "i": 1,
+   "variants": [
+    "GALLAGHER  BASSETT INTERNATIONAL LTD",
+    "GALLAGHER BASSETT INTERNATIONAL LTD"
+   ],
+   "label": "CORRECT"
+  },
+  {
+   "i": 2,
+   "variants": [
+    "THE RIVERSIDE GROUP  LTD",
+    "THE RIVERSIDE GROUP LIMITED"
+   ],
+   "label": "CORRECT"
+  },
+  {
+   "i": 3,
+   "variants": [
+    "HC ONE LIMITED",
+    "HC ONE LTD"
+   ],
+   "label": "CORRECT"
+  },
+  {
+   "i": 4,
+   "variants": [
+    "MASTERPALM PROPERTIES LIMITED",
+    "MASTERPALM PROPERTIES LTD"
+   ],
+   "label": "CORRECT"
+  }
+ ]
+}

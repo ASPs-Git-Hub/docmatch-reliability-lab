@@ -1,0 +1,37 @@
+impl=v2 set=dev
+receipts loaded: 26  scoreable: 26  left out (no total_price digits): 0
+
+== variant R (text as built) ==
+total CORRECT: 0/26  Wilson95 [0.0%, 12.9%]
+total WRONG: 0/26  Wilson95 [0.0%, 12.9%]
+total REFUSED: 26/26  Wilson95 [87.1%, 100.0%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 26), ('items_unparsed', 1), ('subtotal_ambiguous_format', 1), ('total_ambiguous_format', 1)]
+
+== variant C (colon added to 'total x') ==
+total CORRECT: 0/26  Wilson95 [0.0%, 12.9%]
+total WRONG: 0/26  Wilson95 [0.0%, 12.9%]
+total REFUSED: 26/26  Wilson95 [87.1%, 100.0%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 26), ('total_ambiguous_format', 11), ('items_unparsed', 1), ('subtotal_ambiguous_format', 1), ('total_unparseable', 1)]
+
+== variant C-IDR (colon added + caller declares assume_currency='IDR'; deployment-level declaration) ==
+total CORRECT: 10/26  Wilson95 [22.4%, 57.5%]
+total WRONG: 1/26  Wilson95 [0.7%, 18.9%]
+total REFUSED: 15/26  Wilson95 [38.9%, 74.5%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 26), ('items_unparsed', 1), ('total_unparseable', 1)]
+evidence used: {'currency': 11}
+correct totals by written form: {'dotted-or-comma-grouped': 10}
+  WRONG: ('train', 4, '43636.00', '48.000', 0.7, "equals the receipt's labelled SUBTOTAL (a pre-tax 'TOTAL' line)")
+
+== variant R-IDR (text as built + assume_currency='IDR') ==
+total CORRECT: 1/26  Wilson95 [0.7%, 18.9%]
+total WRONG: 0/26  Wilson95 [0.0%, 12.9%]
+total REFUSED: 25/26  Wilson95 [81.1%, 99.3%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 26), ('items_unparsed', 1)]
+evidence used: {'currency': 1}
+correct totals by written form: {'dotted-or-comma-grouped': 1}
+
+ground-truth totals written with a 3-digit group separator: 25/26

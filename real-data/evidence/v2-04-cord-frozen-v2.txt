@@ -1,0 +1,41 @@
+impl=v2 set=frozen
+receipts loaded: 200  scoreable: 193  left out (no total_price digits): 7
+
+== variant R (text as built) ==
+total CORRECT: 0/193  Wilson95 [0.0%, 2.0%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 193/193  Wilson95 [98.0%, 100.0%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('total_ambiguous_format', 12), ('subtotal_ambiguous_format', 10), ('items_unparsed', 9), ('total_unparseable', 4), ('subtotal_unparseable', 2), ('amount_due_ambiguous_format', 1)]
+
+== variant C (colon added to 'total x') ==
+total CORRECT: 4/193  Wilson95 [0.8%, 5.2%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 189/193  Wilson95 [94.8%, 99.2%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('total_ambiguous_format', 119), ('subtotal_ambiguous_format', 10), ('items_unparsed', 9), ('total_unparseable', 4), ('subtotal_unparseable', 2), ('amount_due_ambiguous_format', 1)]
+correct totals by written form: {'other': 2, 'dotted-or-comma-grouped': 2}
+
+== variant C-IDR (colon added + caller declares assume_currency='IDR'; deployment-level declaration) ==
+total CORRECT: 118/193  Wilson95 [54.1%, 67.7%]
+total WRONG: 4/193  Wilson95 [0.8%, 5.2%]
+total REFUSED: 71/193  Wilson95 [30.3%, 43.8%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('items_unparsed', 9), ('total_unparseable', 6), ('subtotal_unparseable', 2)]
+evidence used: {'currency': 121}
+correct totals by written form: {'other': 1, 'dotted-or-comma-grouped': 117}
+  WRONG: ('test', 13, '46636.00', '51.300', 0.7, "equals the receipt's labelled SUBTOTAL (a pre-tax 'TOTAL' line)")
+  WRONG: ('test', 95, '56181.00', '61,799', 0.7, "equals the receipt's labelled SUBTOTAL (a pre-tax 'TOTAL' line)")
+  WRONG: ('validation', 63, '51636.00', '56,800', 0.7, "equals the receipt's labelled SUBTOTAL (a pre-tax 'TOTAL' line)")
+  WRONG: ('validation', 65, '49636.00', '54.600', 0.7, "equals the receipt's labelled SUBTOTAL (a pre-tax 'TOTAL' line)")
+
+== variant R-IDR (text as built + assume_currency='IDR') ==
+total CORRECT: 13/193  Wilson95 [4.0%, 11.2%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 180/193  Wilson95 [88.8%, 96.0%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('items_unparsed', 9), ('total_unparseable', 4), ('subtotal_unparseable', 2)]
+evidence used: {'currency': 14}
+correct totals by written form: {'dotted-or-comma-grouped': 13}
+
+ground-truth totals written with a 3-digit group separator: 185/193

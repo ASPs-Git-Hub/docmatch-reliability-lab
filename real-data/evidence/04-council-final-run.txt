@@ -1,0 +1,39 @@
+lines: {'lines_total': 154735, 'kept': 108839, 'redacted_personal': 45324, 'unparseable_amount_or_date': 572}
+kept rows with amount > 0: 105530  amount <= 0: 3309
+
+== B1 vendor merging ==
+distinct raw supplier strings: 2041
+distinct non-empty identities: 2036   raw strings with empty identity: 0
+merge groups (identity with 2+ raw strings): 5   raw strings inside merge groups: 10
+raw strings removed by merging (raw - identities): 5
+group sizes: [(2, 5)]
+
+fuzzy near-miss pairs (different identity, ratio >= 0.85, same first letter): 16  of which same stripped name but different legal suffix: 3
+
+norm_vendor keys (used by DuplicateDetector) that join raw strings with DIFFERENT legal suffixes: 3
+    ['B***(16)', 'BIG LIFE CENTRES LTD']
+    ['F***(24)', 'FISHERFIELD FARM NURSERY LTD']
+    ['FRANKLIN CARE GROUP', 'FRANKLIN CARE GROUP LTD']
+
+== B2 duplicate and near-duplicate flags ==
+rows fed: 105530  outcomes: {'none': 33442, 'id_conflict': 51669, 'resubmission': 3278, 'possible_duplicate': 17141}
+flagged rows whose earlier row has a DIFFERENT raw supplier string (flag depends on normalisation): 424
+distinct suppliers among flagged rows: 487   flagged rows from the 10 busiest suppliers: 7178
+10 busiest flagged suppliers (counts): [('R***(13)', 1191), ('WELLINGTON HEALTHCARE ARDEN LTD', 1085), ('DUNSTERS FARM LIMITED', 871), ('EAST AND WEST HEALTHCARE LIMITED', 809), ('FRANKLIN CARE GROUP LTD', 787), ('QUALIA CARE LTD IN ADMINISTRATION', 568), ('POSSABILITIES CIC ISF', 566), ('SPRINGFIELD PARK LTD', 443), ('POSSABILITIES CIC TRADING', 435), ('THE RIVERSIDE GROUP  LTD', 423)]
+flags by month: {'2025_JAN_Spend': 3184, '2025_FEB_Spend': 2641, '2025_MAR_Spend': 4378, '2025_APR_Spend': 3052, '2025_MAY_Spend': 3882, '2025_JUNE_SPEND': 4}
+transaction numbers appearing more than once: 6380
+sum of flagged amounts (GBP): 25294365.89
+
+(count only, not scored) vendor+amount keys with the same amount on different dates within 7 days (not flagged by this detector): 861
+
+== B2 voucher level (Deviation 2): one document per payment voucher ==
+vouchers (tx+supplier): 53064  with total > 0 (fed): 50583  vouchers spanning more than one DATE PAID: 1
+vouchers by line count: 1 line: 44196  2+ lines: 6387
+vouchers fed: 50583  outcomes: {'none': 35980, 'possible_duplicate': 14603}
+flagged vouchers whose earlier voucher has a DIFFERENT raw supplier string: 423
+distinct suppliers among flagged vouchers: 477  share of flags from the 10 busiest: 5840
+10 busiest flagged suppliers: [('WELLINGTON HEALTHCARE ARDEN LTD', 1085), ('EAST AND WEST HEALTHCARE LIMITED', 799), ('FRANKLIN CARE GROUP LTD', 787), ('QUALIA CARE LTD IN ADMINISTRATION', 568), ('POSSABILITIES CIC ISF', 566), ('SPRINGFIELD PARK LTD', 443), ('POSSABILITIES CIC TRADING', 435), ('THE RIVERSIDE GROUP  LTD', 423), ('FRANKLIN CARE GROUP', 398), ('O***(18)', 336)]
+flags by month: {'2025_JAN_Spend': 3145, '2025_FEB_Spend': 2617, '2025_MAR_Spend': 2697, '2025_APR_Spend': 2544, '2025_MAY_Spend': 3596, '2025_JUNE_SPEND': 4}
+sum of flagged voucher totals (GBP): 26134777.49
+flagged vouchers that are single-line: 14241  multi-line: 362
+(count only, not scored) voucher vendor+total keys with the same total on different dates within 7 days (not flagged): 367

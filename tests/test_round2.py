@@ -471,11 +471,15 @@ class PipelineRobustness(unittest.TestCase):  # C10 (rejected, documented), C11,
         self.assertEqual(sum(len(o["needs_review"]) for o in outs), 0)
 
     def test_poisoning_is_fail_safe_and_documented(self):
-        # C10: an earlier unknown-ref invoice makes a later same vendor/total/date invoice a possible duplicate.
+        # C10: an earlier invoice with no PO reference makes a later same vendor/total/date invoice a possible duplicate.
         # Deliberately kept: both land in front of a human, neither is lost or paid unseen.
-        r = run([make_po()], inv_text(no="INV-1", po="PO-404"), inv_text(no="INV-2", po="PO-1"))
-        self.assertEqual(len(r["auto_matched"]), 0)
+        # v2 change: an earlier invoice with a DIFFERENT, unknown PO reference no longer poisons it (distinct references).
+        r = run([make_po()], inv_text(no="INV-1", po=None), inv_text(no="INV-2", po="PO-1"))
+        self.assertNotIn("INV-2", [e["invoice_no"] for e in r["auto_matched"]])  # the second is held
         self.assertIn("possible_duplicate", reasons(r))
+        r = run([make_po()], inv_text(no="INV-1", po="PO-404"), inv_text(no="INV-2", po="PO-1"))
+        self.assertEqual(len(r["auto_matched"]), 1)
+        self.assertNotIn("possible_duplicate", reasons(r))
 
     def test_extract_never_raises(self):
         for junk in (None, 5, "", "\x00\x00", "Part: " * 50, "Total: " + "9" * 5000):

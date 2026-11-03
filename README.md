@@ -1,8 +1,24 @@
 # DocMatch Reliability Lab
 
-Status: **CI-PASSING**, independent evaluation pending. Last full remote CI run: commit `47750bc`, [run 41516508823](https://github.com/ASPs-Git-Hub/docmatch-reliability-lab/actions/runs/41516508823), on Python 3.9, 3.10, 3.12 and 3.13: unit tests, the evaluation script and the mutation check. The confidentiality gate (`check-confidential.sh`) was run locally by me, not in CI. Every test set was written by me with an AI model, so none is independent human labelling. Internal label: BUILT_UNVERIFIED until someone outside this project reproduces the results.
+**Independent technical demonstration. The tests use made-up invoices on purpose; the main results use real public data (see `real-data/`). Not client work.**
 
-Details of what I ran: I ran the tests and scripts below myself (Python 3.14 for everything, 3.9 and 3.12 for the unit tests, 3.9 for the evaluation). Two independent model reviews have been answered (round 1 and round 2, see `REVIEW_ROUND2.md`). There is no human review and no CI run yet.
+Status: **BUILT_UNVERIFIED**: tests and planted-defect checks were run by me locally on 2026-11-03; remote CI has not yet run on the latest changes. The previous commit passed CI (commit `47750bc`, [run 41516508823](https://github.com/ASPs-Git-Hub/docmatch-reliability-lab/actions/runs/41516508823), Python 3.9, 3.10, 3.12 and 3.13: unit tests, the evaluation script and the mutation check). No outside person has checked the results. The confidentiality gate (`check-confidential.sh`) was run locally by me, not in CI. Every made-up test set was written by me with an AI model, so none is independent human labelling.
+
+Details of what I ran: I ran the tests and scripts below myself. Two independent model reviews have been answered (round 1 and round 2, see `REVIEW_ROUND2.md`). There is no human review.
+
+## Real-data results
+Full write-up, rules and raw output: [`real-data/README.md`](real-data/README.md). Real invoice and purchase-order pairs are not public, so I could not test the main job (matching an invoice to its order). I tested two smaller things on real data: reading the total off a receipt (200 CORD-v2 receipts, 193 with a labelled total) and the duplicate-payment check on Rochdale Council payments (about 50,600 vouchers, January to June 2025).
+
+| Test | Before the fix (v1) | After the fix (v2) |
+|---|---|---|
+| Receipt totals as written: right / wrong / refused | 0 / 0 / 193 | 0 / 0 / 193 |
+| Receipt totals, with the currency declared by me as rupiah: right / wrong / refused | not possible | 118 / 4 / 71 |
+| Council vouchers flagged as possible duplicates (April to June) | 29.1% | 19.8% |
+
+- The reader never guessed on receipts as written. It refused all 193. That is safe, and also useless for this style of receipt.
+- The number fix (`60.000` can mean sixty thousand) works only when the document or I say which currency it is.
+- The 4 wrong totals read the "before tax" line, not the "grand total" line.
+- Most flagged council payments still look normal on a hand check (19 of 30). No flag is a confirmed double payment.
 
 A small, standard-library-only demonstration of supplier invoice to purchase-order reconciliation for a fictional company, using synthetic text invoices. Most of the work is in the reliability engineering around the matching: strict tiers, "never auto-match when unsure", refusing instead of degrading at extraction, PO-level consumption so one order is paid once, duplicate and multi-part handling, and an exception queue. The evaluation reports the number that matters (false auto-matches) with confidence intervals.
 
@@ -20,12 +36,12 @@ src/docmatch/queue.py      exception queue (one entry per invoice+reason, idempo
 src/docmatch/pipeline.py   process(batch) -> auto_matched / needs_review / skipped / queue; PO consumption
 src/docmatch/naive.py      baseline with the usual defects (kept on purpose)
 src/docmatch/util.py       strict money grammar, vendor normalisation, Wilson interval
-tests/                     203 unittest tests (18 contracts run against both implementations)
+tests/                     277 unittest tests (203 older, 74 new in test_v2.py; 18 contracts run against both implementations)
 data/set_a.json            tuning set (20 cases)
 data/set_b.json            set B (36 cases, 16 traps), byte-identical to its freeze commit
 data/set_c.json            set C (39 single-invoice cases + 10 labelled batch cases), round 2
 scripts/evaluate.py        counts + Wilson 95% intervals, strict single-disposition check, batch scoring
-scripts/mutate.py          96 planted one-line defects in three reported groups
+scripts/mutate.py          148 planted one-line defects (96 older in three groups, 52 for v2)
 evidence/                  real saved output of the commands below
 .github/workflows/test.yml CI definition (lab root; runs when the lab is its own repository, see below)
 REVIEW_ROUND2.md           one accept/reject row per finding of the two round 1 reviews
@@ -71,8 +87,8 @@ Changes since the round 1 numbers:
 - Set A/B false auto-match stay 0, trap flagged stay all.
 
 Other results:
-- Tests: 203 run, all pass on 3.14 (`evidence/unittest-v.txt`), 3.12 and 3.9 (`evidence/unittest-other-pythons.txt`). 18 contracts run against both implementations: fixed passes all, naive fails all 18.
-- Mutation: 96 planted one-line defects, 96 killed, 0 survived, 0 crashes, plus a no-op control that correctly survives (`evidence/mutate.txt`). Reported in three groups, never as one clean percentage: 32 from the round 1 list of 31 (one split in two) re-pointed at the new code; 15 of the 18 mutants the Fable reviewer planted (9 of the 18 had survived round 1, and 8 of those 9 are re-applied here and now killed; 3 of the 18, one of them a round 1 survivor, are retired because the fixes removed the code they mutated); 49 written for the round 2 behaviours. All 96 are hand-picked and were written after the code and the tests, so this is a property of the chosen mutants, not a random-operator mutation score. One mutant (aggregate currency taken from the wrong part) was dropped as equivalent: the tracker already forces all parts to share a currency. Four of the round 2 mutants survived their first run: three got a new or stronger test (amount due fallback after a garbled total, fingerprint subtotal, lock) and the fourth was dropped as equivalent.
+- Tests: 277 run now (203 at round 2), all pass; the 203 figure below is from the round 2 evidence: all pass on 3.14 (`evidence/unittest-v.txt`), 3.12 and 3.9 (`evidence/unittest-other-pythons.txt`). 18 contracts run against both implementations: fixed passes all, naive fails all 18.
+- Mutation: 148 planted defects now, 148 caught (`real-data/evidence/v2-08-mutate.txt`). At round 2 it was 96 planted, 96 killed, 0 survived, 0 crashes, plus a no-op control that correctly survives (`evidence/mutate.txt`). Reported in three groups, never as one clean percentage: 32 from the round 1 list of 31 (one split in two) re-pointed at the new code; 15 of the 18 mutants the Fable reviewer planted (9 of the 18 had survived round 1, and 8 of those 9 are re-applied here and now killed; 3 of the 18, one of them a round 1 survivor, are retired because the fixes removed the code they mutated); 49 written for the round 2 behaviours. All 96 are hand-picked and were written after the code and the tests, so this is a property of the chosen mutants, not a random-operator mutation score. One mutant (aggregate currency taken from the wrong part) was dropped as equivalent: the tracker already forces all parts to share a currency. Four of the round 2 mutants survived their first run: three got a new or stronger test (amount due fallback after a garbled total, fingerprint subtotal, lock) and the fourth was dropped as equivalent.
 
 ## How the sets were handled, honestly
 
@@ -98,3 +114,4 @@ Other results:
 - Duplicate detection can make outcomes arrival-order dependent: an earlier invoice that went to review (for example an unknown PO) can mark a later same vendor/amount/date invoice as a possible duplicate. This is kept on purpose (it fails toward a human), see REVIEW_ROUND2.md.
 - CI ran once on commit `47750bc` in the standalone public repository and passed (unit tests, evaluation script, mutation check). Inside a monorepo GitHub ignores the workflow unless it is copied to the repository root with a `working-directory`. The evidence files in `evidence/` are my own local output; the CI run is a second, remote execution of the same scripts, not independent validation.
 - The naive baseline is a deliberately crude strawman; beating it says little about beating a good production system.
+- Real-data limits: no real invoice and purchase-order pairs were used. Receipts are not supplier invoices. One council and six months is one sample. Hand-check labels are mine, made with a rule I wrote after seeing the sample. No flagged payment was confirmed as a real double payment, and the fixes were tuned on January to March data only. I ran the test once.

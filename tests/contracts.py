@@ -60,9 +60,10 @@ def same_invoice_twice_in_batch_once(f):
 
 
 def rekeyed_duplicate_flagged(f):
+    # v2: a different PO reference now means a different order, so the copy must carry the SAME reference to be a duplicate
     pos = [make_po("PO-1"), make_po("PO-2")]
-    r = f(pos).process([inv_text(no="INV-1", po="PO-1"), inv_text(no="INV-9", po="PO-2")])
-    _eq(len(r["auto_matched"]), 1, "same vendor+total+date under a new number;")
+    r = f(pos).process([inv_text(no="INV-1", po="PO-1"), inv_text(no="INV-9", po="PO-1")])
+    _eq(len(r["auto_matched"]), 1, "same vendor+total+date+PO under a new number;")
 
 
 def lines_do_not_add_up_flagged(f):

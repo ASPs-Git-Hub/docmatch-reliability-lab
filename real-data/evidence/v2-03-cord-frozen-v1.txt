@@ -1,0 +1,19 @@
+impl=v1 set=frozen
+receipts loaded: 200  scoreable: 193  left out (no total_price digits): 7
+
+== variant R (text as built) ==
+total CORRECT: 0/193  Wilson95 [0.0%, 2.0%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 193/193  Wilson95 [98.0%, 100.0%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('total_unparseable', 16), ('subtotal_unparseable', 12), ('items_unparsed', 9), ('amount_due_unparseable', 1)]
+
+== variant C (colon added to 'total x') ==
+total CORRECT: 3/193  Wilson95 [0.5%, 4.5%]
+total WRONG: 0/193  Wilson95 [0.0%, 2.0%]
+total REFUSED: 190/193  Wilson95 [95.5%, 99.5%]
+vendor non-empty: 0  date non-empty: 0  check_invoice clean: 0
+top reasons: [('malformed', 193), ('total_unparseable', 124), ('subtotal_unparseable', 12), ('items_unparsed', 9), ('amount_due_unparseable', 1)]
+correct totals by written form: {'other': 2, 'dotted-or-comma-grouped': 1}
+
+ground-truth totals written with a 3-digit group separator: 185/193

@@ -48,7 +48,7 @@ class PipelineTests(unittest.TestCase):
 
     def test_possible_duplicate_flagged_and_queued(self):
         d = dm([make_po("PO-1"), make_po("PO-2")])
-        r = d.process([inv_text(no="INV-1", po="PO-1"), inv_text(no="INV-2", po="PO-2")])
+        r = d.process([inv_text(no="INV-1", po="PO-1"), inv_text(no="INV-2", po="PO-1")])  # v2: same PO reference
         self.assertEqual(r["needs_review"][0]["reasons"], ["possible_duplicate"])
         self.assertEqual(r["queue"][0].reason, "possible_duplicate")
 
