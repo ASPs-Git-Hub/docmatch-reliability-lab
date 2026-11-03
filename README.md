@@ -2,7 +2,7 @@
 
 **Independent technical demonstration. The tests use made-up invoices on purpose; the main results use real public data (see `real-data/`). Not client work.**
 
-Status: **BUILT_UNVERIFIED**: tests and planted-defect checks were run by me locally on 2026-11-03; remote CI has not yet run on the latest changes. The previous commit passed CI (commit `47750bc`, [run 41516508823](https://github.com/ASPs-Git-Hub/docmatch-reliability-lab/actions/runs/41516508823), Python 3.9, 3.10, 3.12 and 3.13: unit tests, the evaluation script and the mutation check). No outside person has checked the results. The confidentiality gate (`check-confidential.sh`) was run locally by me, not in CI. Every made-up test set was written by me with an AI model, so none is independent human labelling.
+Status: **CI-PASSING**, independent evaluation pending. Last full remote CI run: commit `2cfc7e5`, [run 41601100997](https://github.com/ASPs-Git-Hub/docmatch-reliability-lab/actions/runs/41601100997), Python 3.9, 3.10, 3.12 and 3.13: unit tests, the evaluation script and the planted-defect check. I also ran everything locally on 2026-11-03. No outside person has checked the results. The confidentiality gate (`check-confidential.sh`) was run locally by me, not in CI. Every made-up test set was written by me with an AI model, so none is independent human labelling.
 
 Details of what I ran: I ran the tests and scripts below myself. Two independent model reviews have been answered (round 1 and round 2, see `REVIEW_ROUND2.md`). There is no human review.
 
